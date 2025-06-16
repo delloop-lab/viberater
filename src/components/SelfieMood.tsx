@@ -122,753 +122,258 @@ const carriesPhrases = [
   "carries a sense of wonder", "radiates quiet confidence", "embodies joyful energy", "carries a spark of curiosity", "radiates warmth and kindness", "embodies a playful spirit", "carries a gentle wisdom", "radiates creative energy", "embodies a peaceful calm", "carries a vibrant optimism", "radiates thoughtful insight", "embodies a bold vision", "carries a hopeful outlook", "radiates a sense of adventure", "embodies a nurturing presence", "carries a contagious enthusiasm", "radiates a calm assurance", "embodies a resilient heart", "carries a lighthearted joy", "radiates a magnetic charm", "embodies a generous soul", "carries a quiet strength", "radiates a loving nature", "embodies a determined will", "carries a playful mischief", "radiates a gentle humor", "embodies a passionate drive", "carries a poetic grace", "radiates a thoughtful calm", "embodies a spirited energy", "carries a sense of mystery", "radiates a classic elegance", "embodies a modern edge", "carries a timeless style", "radiates a youthful exuberance", "embodies a wise perspective", "carries a soulful depth", "radiates a cheerful glow", "embodies a fearless heart", "carries a creative spark", "radiates a peaceful aura", "embodies a loyal spirit", "carries a sense of belonging", "radiates a friendly openness", "embodies a curious mind", "carries a sense of purpose", "radiates a gentle resilience", "embodies a thoughtful presence", "carries a radiant smile", "radiates a sense of fun", "embodies a loving heart"
 ];
 
-const generateDescription = (age: number, gender: string, expressions: FaceExpressions) => {
+// Scaffold roast phrase sets (to be filled in later)
+const roastMoodDescriptions: { [key in keyof FaceExpressions]: string[] } = {
+  happy: [
+    "smiles like they just got away with something dumb",
+    "that smile says 'I just ate the last slice and blamed the dog'",
+    "grins like they just remembered a joke from 2009",
+    "smiles like their phone is on 1% and they don't care",
+    "that smile could break a camera lens",
+    "smiles like they just got a participation trophy",
+    "looks like they laugh at their own jokes (and nobody else does)",
+    "smiles like they just got out of a speeding ticket",
+    "that grin says 'I have no idea what's going on'",
+    "smiles like they just found out it's Friday, but it's Monday",
+    "You look like your mum still cuts your sandwiches and your hair.",
+    "You've got main character energy... if the movie flopped.",
+    "Your selfie just lowered my screen resolution.",
+    "You look like you've got strong opinions on stuff you don't understand.",
+    "You look like the human version of a buffering symbol.",
+    "Even AI can't fix that lighting — or that face.",
+    "You look like your parents paid for your personality.",
+    "This pic screams, 'I peaked in Year 9.'",
+    "You've got 'used to be cool, still tells people about it' energy.",
+    "Your face says influencer, your bank account says intern."
+  ],
+  sad: [
+    "looks like they just lost their last brain cell",
+    "has the same energy as a forgotten umbrella",
+    "looks like their favorite show got cancelled again",
+    "has the face of someone who just realized the ice cream fell off the cone",
+    "looks like they just got left on read by their own mom",
+    "has the vibe of a Monday morning alarm",
+    "looks like they just got a text from their ex",
+    "has the energy of a phone with 2% battery",
+    "looks like they just realized they sent a risky text to the wrong person",
+    "has the aura of a lost sock",
+    "That's not a resting face — that's a cry for help.",
+    "Your vibe screams 'group project freeloader.'",
+    "You seem like the kind of person who talks over the movie.",
+    "You look like the type who brags about their Spotify Wrapped.",
+    "That outfit's so confused, it might need therapy.",
+    "Your fashion sense called. It's stuck in 2008.",
+    "You've got strong LinkedIn-but-not-employed energy.",
+    "You look like you'd argue with a barista about almond milk.",
+    "Your confidence is impressive, considering the evidence.",
+    "You look like you Google your own name too often."
+  ],
+  angry: [
+    "is mad, but nobody cares",
+    "looks like they argue with Siri",
+    "has the face of someone who lost at Mario Kart",
+    "looks like they yell at self-checkout machines",
+    "has the energy of a WiFi signal dropping at 99% download",
+    "looks like they just stepped on a Lego",
+    "has the rage of someone who missed happy hour",
+    "looks like they just found out their favorite snack is discontinued",
+    "has the fury of a printer jam",
+    "looks like they just got called into a meeting that could've been an email",
+    "You look like you smell like ambition and disappointment.",
+    "This face screams 'reply-all' email energy.",
+    "You look like a personality quiz gone wrong.",
+    "Did you style that hair with a leaf blower?",
+    "You've got the emotional range of a cardboard cut-out.",
+    "This pic gave my camera trust issues.",
+    "You look like you give TED Talks to your mirror.",
+    "This face says 'I've got 3 podcasts and no job.'",
+    "You look like you ghosted someone and they're better off.",
+    "That selfie should come with a disclaimer."
+  ],
+  fearful: [
+    "is scared of their own reflection",
+    "looks like they just heard a noise in a horror movie",
+    "has the face of someone who forgot their password for the 10th time",
+    "looks like they just saw their search history on the big screen",
+    "has the vibe of someone who just realized they replied-all",
+    "looks like they just saw their boss at the club",
+    "has the energy of a cat near a cucumber",
+    "looks like they just remembered they left the stove on",
+    "has the look of someone who just saw their old cringey Facebook posts",
+    "looks like they just got tagged in an unflattering photo",
+    "You look like a motivational quote with commitment issues.",
+    "Your energy is pure 'I play devil's advocate for fun.'",
+    "You're the reason group chats go silent.",
+    "Your face says 'alpha,' your aura says 'needs approval.'",
+    "That shirt's working harder than you ever have.",
+    "You look like you bench press your own insecurities.",
+    "You've got strong 'still lives at home' energy.",
+    "Your personality is like decaf — there but pointless.",
+    "You look like you send gym selfies with zero progress.",
+    "You look like someone who says 'let's circle back' in real life."
+  ],
+  disgusted: [
+    "looks like they smelled their own feet",
+    "has the face of someone who just tasted spoiled milk",
+    "looks like they just saw socks with sandals",
+    "has the vibe of someone who just found a hair in their food",
+    "looks like they just watched a TikTok dance fail",
+    "has the energy of someone who just saw pineapple on pizza",
+    "looks like they just found out their favorite celebrity is cancelled",
+    "has the face of someone who just saw a public bathroom",
+    "looks like they just realized their coffee is decaf",
+    "has the look of someone who just saw a mullet comeback",
+    "You look like you peaked during lockdown.",
+    "You look like you print out memes to show people.",
+    "You've got big 'talks about crypto at parties' vibes.",
+    "You're serving beige energy with a side of meh.",
+    "You look like your idea of flirting is LinkedIn endorsements.",
+    "Your photo gave me secondhand embarrassment.",
+    "You look like you narrate your life like it's a documentary no one asked for.",
+    "You've got the enthusiasm of a tax return.",
+    "You're not the vibe, you're the warning.",
+    "Even your shadow looks like it wants to leave."
+  ],
+  surprised: [
+    "is surprised they made it this far",
+    "looks like they just found out water is wet",
+    "has the face of someone who just got Rickrolled",
+    "looks like they just saw their bank balance after a night out",
+    "has the energy of someone who just realized it's Monday",
+    "looks like they just got a text from their crush (wrong number)",
+    "has the look of someone who just saw a dog walk itself",
+    "looks like they just found out their favorite show has 10 more seasons",
+    "has the face of someone who just saw a ghost (or their ex)",
+    "looks like they just realized they left their phone at home"
+  ],
+  neutral: [
+    "has the personality of a potato",
+    "looks like they're buffering in real life",
+    "has the energy of a Windows 95 screensaver",
+    "looks like they just woke up from a nap and forgot what year it is",
+    "has the vibe of a loading bar stuck at 99%",
+    "looks like they just realized they're in the wrong Zoom meeting",
+    "has the face of someone who just got asked 'what's up?' and blanked",
+    "looks like they just got caught daydreaming in a job interview",
+    "has the aura of a forgotten password hint",
+    "looks like they're waiting for a punchline that never comes"
+  ]
+};
+
+const generateDescription = (age: number, gender: string, expressions: FaceExpressions, mode: 'nice' | 'roast') => {
   const pronouns = getPronouns(gender);
   const mood = Object.entries(expressions).sort((a, b) => b[1] - a[1])[0][0] as keyof FaceExpressions;
-  const moodIntensity = expressions[mood];
-  const ageGroup = age < 25 ? 'young' : age < 40 ? 'young adult' : age < 60 ? 'mature' : 'wise';
-  
-  const moodDescriptions: { [key in keyof FaceExpressions]: string[] } = {
-    happy: [
-      "radiates positive energy",
-      "has a contagious smile",
-      "brings sunshine to the room",
-      "looks genuinely joyful",
-      "is beaming with happiness",
-      "has a twinkle in their eye",
-      "is glowing with delight",
-      "spreads joy wherever they go",
-      "has a heartwarming grin",
-      "is the life of the party",
-      "exudes cheerful vibes",
-      "is in high spirits",
-      "has a playful sparkle",
-      "is full of laughter",
-      "is a ray of sunshine",
-      "has a jubilant expression",
-      "is radiating warmth",
-      "is in a celebratory mood",
-      "is clearly enjoying the moment",
-      "has a blissful aura",
-      "is smiling from within",
-      "is in a state of pure joy",
-      "is delightfully upbeat",
-      "is positively glowing",
-      "has a spring in their step",
-      "is the embodiment of cheerfulness",
-      "has a lighthearted spirit",
-      "is a beacon of happiness",
-      "is always ready to celebrate",
-      "has a sparkling personality",
-      "is a source of inspiration",
-      "is a joy to be around",
-      "has a magnetic smile",
-      "is a bundle of joy",
-      "is a fountain of positivity",
-      "is a delight to everyone",
-      "is a happiness magnet",
-      "is a cheerful companion",
-      "is a bringer of good vibes",
-      "is a laughter enthusiast",
-      "is a mood lifter",
-      "is a joy spreader",
-      "is a happiness ambassador",
-      "is a positivity powerhouse",
-      "is a smile generator",
-      "is a sunshine soul",
-      "is a happiness spark",
-      "is a joy igniter",
-      "is a cheerful soul",
-      "is a radiant friend",
-      "is a happiness catalyst",
-      "is a joy creator",
-      "is a positive force",
-      "is a cheerful leader",
-      "is a happiness influencer",
-      "is a joy architect",
-      "is a radiant being",
-      "is a cheerful motivator",
-      "is a happiness seeker",
-      "is a joy explorer",
-      "is a radiant presence",
-      "is a cheerful visionary"
-    ],
-    sad: [
-      "seems to be having a thoughtful moment",
-      "has a contemplative expression",
-      "looks like they could use a hug",
-      "has a gentle, melancholic aura",
-      "is lost in deep thought",
-      "has a wistful gaze",
-      "is quietly reflective",
-      "shows a touch of sorrow",
-      "has a pensive look",
-      "is feeling blue",
-      "is in a somber mood",
-      "has a soft sadness",
-      "is experiencing a tender moment",
-      "is quietly introspective",
-      "has a downcast glance",
-      "is feeling sentimental",
-      "is in a moment of vulnerability",
-      "is showing gentle emotion",
-      "is in a subdued state",
-      "is feeling a bit low",
-      "is quietly yearning",
-      "is in a mellow mood",
-      "is feeling nostalgic",
-      "is in a gentle lull",
-      "is in a reflective state",
-      "is quietly pondering",
-      "is in a moment of longing",
-      "is feeling a gentle ache",
-      "is in a state of reminiscence",
-      "is quietly mourning",
-      "is in a moment of solitude",
-      "is feeling a quiet ache",
-      "is in a state of pensiveness",
-      "is quietly grieving",
-      "is in a moment of silence",
-      "is feeling a gentle loss",
-      "is in a state of yearning",
-      "is quietly lamenting",
-      "is in a moment of quietude",
-      "is feeling a gentle sorrow",
-      "is in a state of reflection",
-      "is quietly brooding",
-      "is in a moment of sadness",
-      "is feeling a gentle melancholy",
-      "is in a state of wistfulness",
-      "is quietly sighing",
-      "is in a moment of regret",
-      "is feeling a gentle disappointment",
-      "is in a state of longing",
-      "is quietly hoping",
-      "is in a moment of patience",
-      "is feeling a gentle yearning",
-      "is in a state of acceptance",
-      "is quietly enduring",
-      "is in a moment of waiting",
-      "is feeling a gentle patience",
-      "is in a state of hope",
-      "is quietly wishing",
-      "is in a moment of anticipation",
-      "is feeling a gentle anticipation"
-    ],
-    angry: [
-      "shows strong determination",
-      "has an intense, focused look",
-      "displays powerful emotions",
-      "seems passionate about something",
-      "is fiercely motivated",
-      "has a fiery gaze",
-      "is brimming with resolve",
-      "is not to be trifled with",
-      "is channeling their energy",
-      "is standing their ground",
-      "is full of conviction",
-      "is ready to take action",
-      "is showing boldness",
-      "is in a defiant mood",
-      "is fiercely expressive",
-      "is unyielding",
-      "is showing a strong will",
-      "is in a combative spirit",
-      "is not backing down",
-      "is in a stormy mood",
-      "is radiating intensity",
-      "is showing a forceful presence",
-      "is in a passionate state",
-      "is exuding strength",
-      "is a force to be reckoned with",
-      "is a powerhouse of emotion",
-      "is a determined spirit",
-      "is a bold challenger",
-      "is a fierce competitor",
-      "is a passionate advocate",
-      "is a strong-willed individual",
-      "is a relentless pursuer",
-      "is a fiery leader",
-      "is a courageous fighter",
-      "is a spirited debater",
-      "is a tenacious achiever",
-      "is a bold visionary",
-      "is a fearless trailblazer",
-      "is a passionate creator",
-      "is a determined innovator",
-      "is a strong-minded thinker",
-      "is a relentless doer",
-      "is a fiery motivator",
-      "is a courageous inspirer",
-      "is a spirited influencer",
-      "is a tenacious builder",
-      "is a bold explorer",
-      "is a fearless dreamer",
-      "is a passionate seeker",
-      "is a determined solver",
-      "is a strong-hearted friend",
-      "is a relentless supporter",
-      "is a fiery protector",
-      "is a courageous defender",
-      "is a spirited challenger",
-      "is a tenacious survivor",
-      "is a bold risk-taker",
-      "is a fearless leader",
-      "is a passionate driver",
-      "is a determined winner"
-    ],
-    fearful: [
-      "looks a bit surprised",
-      "seems to be in a moment of wonder",
-      "has an alert expression",
-      "shows cautious awareness",
-      "is slightly apprehensive",
-      "is on edge",
-      "is in a state of anticipation",
-      "is feeling uncertain",
-      "is showing a hint of worry",
-      "is in a moment of suspense",
-      "is feeling a bit tense",
-      "is in a watchful state",
-      "is showing nervous energy",
-      "is in a guarded mood",
-      "is feeling a bit anxious",
-      "is in a state of alertness",
-      "is showing a wary glance",
-      "is in a moment of hesitation",
-      "is feeling a bit startled",
-      "is in a cautious frame of mind",
-      "is in a tentative mood",
-      "is showing a flicker of fear",
-      "is in a vigilant state",
-      "is feeling a bit uneasy",
-      "is a cautious observer",
-      "is a watchful guardian",
-      "is a careful planner",
-      "is a thoughtful protector",
-      "is a vigilant thinker",
-      "is a wary traveler",
-      "is a tentative explorer",
-      "is a careful dreamer",
-      "is a cautious friend",
-      "is a watchful companion",
-      "is a careful listener",
-      "is a thoughtful advisor",
-      "is a vigilant supporter",
-      "is a wary innovator",
-      "is a tentative creator",
-      "is a careful builder",
-      "is a cautious leader",
-      "is a watchful motivator",
-      "is a careful inspirer",
-      "is a thoughtful challenger",
-      "is a vigilant survivor",
-      "is a wary risk-taker",
-      "is a tentative achiever",
-      "is a careful winner",
-      "is a cautious solver",
-      "is a watchful dreamer",
-      "is a careful seeker",
-      "is a thoughtful doer",
-      "is a vigilant friend",
-      "is a wary supporter",
-      "is a tentative builder",
-      "is a careful protector",
-      "is a cautious defender"
-    ],
-    disgusted: [
-      "has a skeptical expression",
-      "shows discerning judgment",
-      "looks like they've seen something interesting",
-      "has a critical eye",
-      "is unimpressed",
-      "is showing a hint of distaste",
-      "is in a judgmental mood",
-      "is feeling a bit put off",
-      "is showing a look of disapproval",
-      "is in a picky mood",
-      "is not easily pleased",
-      "is showing a scrupulous glance",
-      "is in a selective state",
-      "is feeling a bit grossed out",
-      "is in a discriminating mood",
-      "is showing a look of aversion",
-      "is in a fastidious frame of mind",
-      "is feeling a bit repulsed",
-      "is in a critical state",
-      "is showing a look of skepticism",
-      "is in a scrutinizing mood",
-      "is feeling a bit dismissive",
-      "is in a rejecting state",
-      "is showing a look of distaste",
-      "is a discerning critic",
-      "is a selective thinker",
-      "is a picky chooser",
-      "is a fastidious friend",
-      "is a critical observer",
-      "is a scrupulous judge",
-      "is a discriminating advisor",
-      "is a selective supporter",
-      "is a picky innovator",
-      "is a fastidious creator",
-      "is a critical builder",
-      "is a scrupulous leader",
-      "is a discriminating motivator",
-      "is a selective inspirer",
-      "is a picky challenger",
-      "is a fastidious survivor",
-      "is a critical risk-taker",
-      "is a scrupulous achiever",
-      "is a discriminating winner",
-      "is a selective solver",
-      "is a picky dreamer",
-      "is a fastidious seeker",
-      "is a critical doer",
-      "is a scrupulous friend",
-      "is a discriminating supporter",
-      "is a selective builder",
-      "is a picky protector",
-      "is a fastidious defender"
-    ],
-    surprised: [
-      "looks pleasantly surprised",
-      "has an expression of wonder",
-      "seems to be in a moment of discovery",
-      "shows delightful astonishment",
-      "is wide-eyed with amazement",
-      "is in awe of something",
-      "is caught off guard",
-      "is in a state of marvel",
-      "is showing a look of revelation",
-      "is in a moment of realization",
-      "is feeling a rush of excitement",
-      "is in a state of disbelief",
-      "is showing a look of shock",
-      "is in a moment of surprise",
-      "is feeling a jolt of wonder",
-      "is in a state of fascination",
-      "is showing a look of amazement",
-      "is in a moment of awe",
-      "is feeling a spark of curiosity",
-      "is in a state of intrigue",
-      "is showing a look of astonishment",
-      "is in a moment of delight",
-      "is feeling a burst of surprise",
-      "is in a state of glee",
-      "is a marveling observer",
-      "is a curious explorer",
-      "is a fascinated thinker",
-      "is a surprised dreamer",
-      "is a delighted friend",
-      "is a shocked companion",
-      "is a wondering innovator",
-      "is a amazed creator",
-      "is a marveling builder",
-      "is a curious leader",
-      "is a fascinated motivator",
-      "is a surprised inspirer",
-      "is a delighted challenger",
-      "is a shocked survivor",
-      "is a wondering risk-taker",
-      "is a amazed achiever",
-      "is a marveling winner",
-      "is a curious solver",
-      "is a fascinated dreamer",
-      "is a surprised seeker",
-      "is a delighted doer",
-      "is a shocked friend",
-      "is a wondering supporter",
-      "is a amazed builder",
-      "is a marveling protector",
-      "is a curious defender"
-    ],
-    neutral: [
-      "has a calm, composed presence",
-      "shows quiet confidence",
-      "has a peaceful demeanor",
-      "displays natural elegance",
-      "is in a balanced state",
-      "is feeling centered",
-      "is showing poise",
-      "is in a tranquil mood",
-      "is feeling at ease",
-      "is in a serene state",
-      "is showing a relaxed attitude",
-      "is in a composed frame of mind",
-      "is feeling steady",
-      "is in a harmonious mood",
-      "is showing a placid expression",
-      "is in a restful state",
-      "is feeling unruffled",
-      "is in a peaceful frame of mind",
-      "is showing a gentle presence",
-      "is in a mellow mood",
-      "is feeling content",
-      "is in a state of equanimity",
-      "is showing a neutral expression",
-      "is in a composed state",
-      "is feeling balanced",
-      "is a calm observer",
-      "is a composed thinker",
-      "is a peaceful dreamer",
-      "is a tranquil friend",
-      "is a steady companion",
-      "is a harmonious innovator",
-      "is a placid creator",
-      "is a restful builder",
-      "is a unruffled leader",
-      "is a peaceful motivator",
-      "is a gentle inspirer",
-      "is a mellow challenger",
-      "is a content survivor",
-      "is a equanimous risk-taker",
-      "is a neutral achiever",
-      "is a composed winner",
-      "is a balanced solver",
-      "is a calm dreamer",
-      "is a composed seeker",
-      "is a peaceful doer",
-      "is a tranquil friend",
-      "is a steady supporter",
-      "is a harmonious builder",
-      "is a placid protector",
-      "is a restful defender"
-    ]
-  };
+  const roundedAge = Math.round(age);
 
-  // Shuffle and pick 2-3 unique, unused phrases for the mood
-  const moodList = moodDescriptions[mood];
-  const numPhrases = 2 + Math.floor(Math.random() * 2); // 2 or 3
-  const chosenPhrases: string[] = [];
-  for (let i = 0; i < numPhrases; i++) {
-    const idx = getUniqueRandomIndex(usedMoodIndices[mood], moodList.length);
-    chosenPhrases.push(moodList[idx]);
-  }
-
-  // Join phrases naturally
-  let moodPhrase = '';
-  if (chosenPhrases.length === 2) {
-    moodPhrase = `${pronouns.subject} ${chosenPhrases[0]} and ${chosenPhrases[1]}`;
-  } else if (chosenPhrases.length === 3) {
-    moodPhrase = `${pronouns.subject} ${chosenPhrases[0]}, ${chosenPhrases[1]}, and ${chosenPhrases[2]}`;
+  if (mode === 'roast') {
+    const roastStories: { [key in keyof FaceExpressions]: string[] } = {
+      happy: [
+        `${pronouns.subject} laughs at ${pronouns.possessive} own jokes so hard, even the goldfish looks concerned. At the family BBQ, ${pronouns.subject} retells the same story for the third time, and somehow, the punchline gets worse. By dessert, everyone's just smiling politely, hoping ${pronouns.subject}'ll switch to charades instead.`,
+        `${pronouns.subject}'s the type who posts inspirational quotes, then trips over ${pronouns.possessive} own shoelaces at brunch. ${pronouns.possessive} friends watch as ${pronouns.subject} tries to play it cool, but the syrup stain on ${pronouns.possessive} shirt tells a different story. By the end, ${pronouns.subject}'s laughing the loudest—at ${pronouns.object}.`,
+        `At the gym, ${pronouns.subject} flexes in the mirror, but the only thing growing is ${pronouns.possessive} playlist of motivational speeches. ${pronouns.subject} grins at ${pronouns.possessive} reflection, then drops ${pronouns.possessive} water bottle with a clang that echoes across the room. Everyone pretends not to notice, but the janitor gives ${pronouns.object} a thumbs up.`,
+        `${pronouns.subject}'s got the confidence of a reality TV star and the luck of someone who always picks the slowest checkout line. At the store, ${pronouns.subject} tries to charm the cashier, but ends up paying twice for gum. ${pronouns.subject} leaves, waving like ${pronouns.subject}'s won an award.`,
+        `${pronouns.subject} calls ${pronouns.object}self a foodie, but ${pronouns.possessive} idea of gourmet is instant noodles with extra cheese. At dinner parties, ${pronouns.subject} critiques the appetizers, then asks if anyone has ketchup. By dessert, ${pronouns.subject}'s Instagramming a half-eaten cupcake with the caption #blessed.`
+      ],
+      sad: [
+        `${pronouns.subject}'s the one who brings ${pronouns.possessive} own tissues to a comedy show, just in case. At the movies, ${pronouns.subject} tears up during the previews, and by the end, ${pronouns.subject}'s offering life advice to strangers in the lobby. The popcorn girl gives ${pronouns.object} a free refill out of pity.`,
+        `${pronouns.subject} posts cryptic quotes on social media, then spends the afternoon refreshing for likes. At the coffee shop, ${pronouns.subject} sighs dramatically, hoping someone will ask what's wrong. The barista just offers ${pronouns.object} a loyalty card instead.`,
+        `${pronouns.subject}'s still salty about losing a board game three years ago. At game night, ${pronouns.subject} insists on reading the rules aloud, then loses anyway. ${pronouns.subject} blames the dice, the lighting, and the existential unfairness of life. Everyone else just laughs.`,
+        `${pronouns.possessive} coffee order takes longer to explain than it does to drink. At the counter, ${pronouns.subject} lists ${pronouns.possessive} preferences, substitutions, and temperature requirements. The barista nods, then hands ${pronouns.object} a regular black coffee. ${pronouns.subject} drinks it, defeated but dignified.`,
+        `${pronouns.subject}'s the one who's 'just five minutes away' but somehow takes 45. At the party, ${pronouns.subject} arrives as everyone's leaving, then wonders why the chips are gone. ${pronouns.subject} takes a selfie with the empty bowl, captioning it 'missed connections.'`
+      ],
+      angry: [
+        `${pronouns.subject}'s the one who yells at self-checkout machines, convinced they're plotting against ${pronouns.object}. At the store, ${pronouns.subject} slams the 'help' button, then apologizes to the attendant for ${pronouns.possessive} 'passion.' The receipt prints out, judging ${pronouns.object} silently.`,
+        `${pronouns.subject} calls ${pronouns.object}self a 'boss babe,' but ${pronouns.possessive} resume says 'professional napper.' At meetings, ${pronouns.subject} interrupts with 'just one more thing,' then forgets what it was. ${pronouns.possessive} coworkers take bets on how long ${pronouns.subject}'ll last before lunch.`,
+        `${pronouns.subject} tries to flex on Instagram, but ${pronouns.possessive} followers are mostly bots. At the gym, ${pronouns.subject} takes mirror selfies, then leaves after one set. The staff waves goodbye, already forgetting ${pronouns.possessive} name.`,
+        `${pronouns.subject}'s got a PhD in overthinking and a minor in self-doubt. At brunch, ${pronouns.subject} debates the menu for twenty minutes, then orders toast. ${pronouns.possessive} friends order for ${pronouns.object} next time.`,
+        `${pronouns.subject} thinks sarcasm is a personality trait, not a defense mechanism. At parties, ${pronouns.subject} delivers zingers that land like lead balloons. ${pronouns.subject} laughs anyway, convinced ${pronouns.subject}'s the funniest one in the room.`
+      ],
+      fearful: [
+        `${pronouns.subject}'s the one who still calls ${pronouns.possessive} mom to ask if ${pronouns.subject} should wear shorts. At the park, ${pronouns.subject} checks the weather app every five minutes, then brings an umbrella just in case. The sun shines anyway, mocking ${pronouns.possessive} caution.`,
+        `${pronouns.subject} has a 'resting confused face' perfected to art. At the museum, ${pronouns.subject} stares at abstract paintings, nodding like ${pronouns.subject} understands. ${pronouns.possessive} friends just take photos for the group chat.`,
+        `${pronouns.possessive} cooking smells like regret and burnt toast. At dinner, ${pronouns.subject} serves up a 'surprise' dish that even the dog refuses. ${pronouns.subject} laughs it off, but orders pizza anyway.`,
+        `${pronouns.subject} tries to 'keep it real,' but all you get is 'keep it awkward.' At parties, ${pronouns.subject} starts stories ${pronouns.subject} can't finish, then changes the subject. ${pronouns.possessive} friends fill in the blanks.`,
+        `${pronouns.subject} uses 'YOLO' to justify being late… again. At work, ${pronouns.subject} blames traffic, the weather, and Mercury in retrograde. ${pronouns.possessive} boss just sighs, marking ${pronouns.object} absent.`
+      ],
+      disgusted: [
+        `${pronouns.subject}'s got an ego the size of a planet, but no clue how to orbit a conversation. At parties, ${pronouns.subject} dominates the punch bowl, then wonders why nobody's listening. The host just turns up the music.`,
+        `${pronouns.subject} thinks 'sarcasm' means 'being nice.' At brunch, ${pronouns.subject} compliments the chef, then gags at the eggs. ${pronouns.possessive} friends just roll their eyes.`,
+        `${pronouns.possessive} idea of flirting is awkwardly talking about the weather. At the bar, ${pronouns.subject} asks about humidity, then wonders why ${pronouns.possessive} date leaves. The bartender just laughs.`,
+        `${pronouns.subject}'s a professional over-sharer in group chats no one asked to join. At dinner, ${pronouns.subject} recounts ${pronouns.possessive} latest dream in excruciating detail. The waiter brings the check early.`,
+        `${pronouns.subject} thinks 'chill' means ignoring everyone forever. At the party, ${pronouns.subject} sits in the corner, scrolling through memes. ${pronouns.possessive} friends send ${pronouns.object} texts from across the room.`
+      ],
+      surprised: [
+        `${pronouns.subject}'s the one who brings a confetti cannon to a surprise party, then sets it off before anyone arrives. At the big reveal, ${pronouns.subject}'s more startled than the guest of honor. The photos are priceless.`,
+        `${pronouns.subject}'s the type who gasps at plot twists in cartoons. At movie night, ${pronouns.subject} narrates every scene, then jumps at ${pronouns.possessive} own shadow. ${pronouns.possessive} friends bring popcorn for the show.`,
+        `${pronouns.subject} finds out ${pronouns.possessive} favorite band is reuniting, then faints in the ticket line. At the concert, ${pronouns.subject} sings every word, off-key but enthusiastic. The crowd cheers anyway.`,
+        `${pronouns.subject} opens a gift, then thanks the wrong person. At birthdays, ${pronouns.subject}'s more surprised by the cake than the presents. ${pronouns.possessive} friends just laugh and light another candle.`,
+        `${pronouns.subject}'s the only one who claps when the plane lands. On vacation, ${pronouns.subject} marvels at hotel keycards like they're magic. The staff gives ${pronouns.object} a tour, just for fun.`
+      ],
+      neutral: [
+        `${pronouns.subject}'s the one who blends into every group photo, but somehow always stands out. At the office, ${pronouns.subject}'s the king of casual Fridays, rocking socks with sandals like it's a statement. The HR memo is just for ${pronouns.object}.`,
+        `${pronouns.subject}'s the queen of small talk, but ${pronouns.possessive} favorite topic is the weather. At the bus stop, ${pronouns.subject} predicts rain with the confidence of a meteorologist. The driver just nods, umbrella in hand.`,
+        `${pronouns.subject}'s the type who brings a book to a party, then reads in the kitchen. At midnight, ${pronouns.subject}'s still on chapter one, but everyone knows ${pronouns.possessive} name. The host offers ${pronouns.object} a bookmark.`,
+        `${pronouns.subject}'s the master of polite laughter, but ${pronouns.possessive} real talent is dodging group photos. At weddings, ${pronouns.subject}'s always 'in the restroom' during the bouquet toss. The photographer gives up.`,
+        `${pronouns.subject}'s the one who remembers everyone's birthday, but forgets ${pronouns.possessive} own. At the office, ${pronouns.subject} organizes the cake, then acts surprised when it's for ${pronouns.object}. The team sings off-key, just for fun.`
+      ]
+    };
+    const stories = roastStories[mood];
+    return stories[Math.floor(Math.random() * stories.length)];
   } else {
-    moodPhrase = `${pronouns.subject} ${chosenPhrases[0]}`;
+    const niceStories: { [key in keyof FaceExpressions]: string[] } = {
+      happy: [
+        `${pronouns.subject} lights up the room with ${pronouns.possessive} infectious laugh, making even the grumpiest barista crack a smile. At the café, ${pronouns.subject} shares stories that turn strangers into friends, and by closing time, everyone's planning the next meetup.`,
+        `${pronouns.subject}'s the kind of person who finds joy in the little things—like the perfect cup of coffee or a stranger's smile. At the park, ${pronouns.subject} spreads positivity like confetti, and somehow, the day feels brighter for everyone who crosses ${pronouns.possessive} path.`,
+        `${pronouns.subject} has a way of turning ordinary moments into memories. At the beach, ${pronouns.subject} builds sandcastles with kids, shares sunscreen with strangers, and by sunset, everyone's gathered around, sharing stories like old friends.`,
+        `${pronouns.subject}'s enthusiasm is contagious, like a ray of sunshine on a cloudy day. At the farmers market, ${pronouns.subject} chats with vendors, samples everything, and leaves with more than just groceries—${pronouns.subject} leaves with new friends.`,
+        `${pronouns.subject} brings warmth to every room ${pronouns.subject} enters, like a cozy fireplace on a winter night. At the party, ${pronouns.subject} makes everyone feel welcome, and by the end, strangers are exchanging numbers, promising to meet again.`
+      ],
+      sad: [
+        `${pronouns.subject} has a quiet strength that speaks volumes. At the library, ${pronouns.subject} finds solace in books, and somehow, the stories seem to understand exactly what ${pronouns.subject} needs. The librarian saves ${pronouns.object} favorite spot.`,
+        `${pronouns.subject}'s the kind of person who feels deeply, and that's what makes ${pronouns.object} special. At the park, ${pronouns.subject} shares a bench with strangers, and somehow, they end up sharing stories that heal them both.`,
+        `${pronouns.subject} has a way of turning pain into poetry. At the café, ${pronouns.subject} writes in ${pronouns.possessive} journal, and the barista brings an extra cookie, sensing ${pronouns.possessive} need for comfort.`,
+        `${pronouns.subject}'s vulnerability is ${pronouns.possessive} superpower. At the support group, ${pronouns.subject} shares ${pronouns.possessive} story, and others find courage in ${pronouns.possessive} words. The room feels lighter after ${pronouns.subject} speaks.`,
+        `${pronouns.subject} has a heart that feels everything deeply, and that's what makes ${pronouns.object} beautiful. At the beach, ${pronouns.subject} watches the waves, and somehow, the ocean seems to understand ${pronouns.possessive} sadness.`
+      ],
+      angry: [
+        `${pronouns.subject} channels ${pronouns.possessive} passion into positive change. At the community meeting, ${pronouns.subject} speaks up for what's right, and others find their voice too. The room buzzes with newfound energy.`,
+        `${pronouns.subject}'s fire burns bright, but it's the light that guides others. At the protest, ${pronouns.subject} leads with conviction, and the crowd follows, inspired by ${pronouns.possessive} courage.`,
+        `${pronouns.subject} turns frustration into fuel for growth. At the gym, ${pronouns.subject} pushes harder, and others match ${pronouns.possessive} intensity. The trainer nods, impressed by ${pronouns.possessive} determination.`,
+        `${pronouns.subject} uses ${pronouns.possessive} voice to make a difference. At the town hall, ${pronouns.subject} demands accountability, and the officials listen. The community stands a little taller.`,
+        `${pronouns.subject}'s passion is a force for good. At the workshop, ${pronouns.subject} channels ${pronouns.possessive} energy into creating change, and others join in, inspired by ${pronouns.possessive} drive.`
+      ],
+      fearful: [
+        `${pronouns.subject} faces ${pronouns.possessive} fears with quiet courage. At the high ropes course, ${pronouns.subject} takes the first step, and others follow, finding strength in ${pronouns.possessive} example.`,
+        `${pronouns.subject}'s vulnerability is ${pronouns.possessive} strength. At the therapy session, ${pronouns.subject} shares ${pronouns.possessive} story, and others find comfort in knowing they're not alone.`,
+        `${pronouns.subject} turns anxiety into art. At the studio, ${pronouns.subject} creates beauty from ${pronouns.possessive} fears, and others find inspiration in ${pronouns.possessive} courage.`,
+        `${pronouns.subject} uses ${pronouns.possessive} voice to help others. At the support group, ${pronouns.subject} speaks up, and others find the words they've been searching for.`,
+        `${pronouns.subject}'s journey inspires others. At the workshop, ${pronouns.subject} shares ${pronouns.possessive} story, and the room fills with hope.`
+      ],
+      disgusted: [
+        `${pronouns.subject} stands up for what's right. At the meeting, ${pronouns.subject} calls out injustice, and others find their voice too. The room changes for the better.`,
+        `${pronouns.subject}'s integrity is unwavering. At the office, ${pronouns.subject} refuses to compromise ${pronouns.possessive} values, and others follow ${pronouns.possessive} lead.`,
+        `${pronouns.subject} uses ${pronouns.possessive} voice to make a difference. At the town hall, ${pronouns.subject} demands change, and the community listens.`,
+        `${pronouns.subject}'s passion drives positive change. At the protest, ${pronouns.subject} leads with conviction, and others join in, inspired by ${pronouns.possessive} courage.`,
+        `${pronouns.subject} turns frustration into fuel for growth. At the workshop, ${pronouns.subject} channels ${pronouns.possessive} energy into creating change, and others find their purpose too.`
+      ],
+      surprised: [
+        `${pronouns.subject}'s wonder is contagious. At the museum, ${pronouns.subject} discovers beauty in unexpected places, and others see the world through new eyes.`,
+        `${pronouns.subject} finds joy in the little things. At the park, ${pronouns.subject} marvels at a butterfly, and others stop to appreciate the moment too.`,
+        `${pronouns.subject}'s enthusiasm brightens the day. At the café, ${pronouns.subject} tries a new flavor, and the whole room smiles at ${pronouns.possessive} delight.`,
+        `${pronouns.subject} brings magic to ordinary moments. At the concert, ${pronouns.subject} dances like nobody's watching, and others join in, forgetting their inhibitions.`,
+        `${pronouns.subject}'s curiosity leads to adventure. At the farmers market, ${pronouns.subject} tries everything, and vendors share their stories, charmed by ${pronouns.possessive} interest.`
+      ],
+      neutral: [
+        `${pronouns.subject} brings calm to chaos. At the office, ${pronouns.subject} handles crises with grace, and others find their center too.`,
+        `${pronouns.subject}'s presence is grounding. At the party, ${pronouns.subject} makes everyone feel welcome, and the room feels more relaxed.`,
+        `${pronouns.subject} finds beauty in balance. At the yoga studio, ${pronouns.subject} moves with intention, and others follow ${pronouns.possessive} lead.`,
+        `${pronouns.subject}'s wisdom comes from stillness. At the park, ${pronouns.subject} watches the world go by, and others find peace in ${pronouns.possessive} company.`,
+        `${pronouns.subject} brings harmony to any situation. At the family dinner, ${pronouns.subject} bridges gaps with gentle words, and everyone feels heard.`
+      ]
+    };
+    const stories = niceStories[mood];
+    return stories[Math.floor(Math.random() * stories.length)];
   }
-
-  const ageDescriptions = {
-    young: "youthful spirit",
-    "young adult": "vibrant energy",
-    mature: "distinguished presence",
-    wise: "timeless wisdom"
-  };
-
-  // Back story templates
-  const origins = [
-    "a bustling city on the coast",
-    "a quiet mountain village",
-    "a vibrant artistic community",
-    "a small town with big dreams",
-    "a tech hub in a major metropolis",
-    "a peaceful countryside estate",
-    "a lively university campus",
-    "a creative studio downtown",
-    "a family of travelers",
-    "a community of innovators",
-    "a multicultural neighborhood",
-    "a historic district",
-    "a scenic lakeside town",
-    "a dynamic urban center",
-    "a close-knit rural community",
-    "a city known for its music scene",
-    "a region famous for its cuisine",
-    "a place where tradition meets modernity",
-    "a town surrounded by nature",
-    "a city that never sleeps"
-  ];
-  const ambitions = [
-    "to make a positive impact on the world",
-    "to create something truly unique",
-    "to inspire others through their actions",
-    "to travel and experience new cultures",
-    "to master their craft",
-    "to build meaningful connections",
-    "to achieve personal growth",
-    "to bring joy to those around them",
-    "to lead by example",
-    "to explore the unknown",
-    "to turn dreams into reality",
-    "to help others succeed",
-    "to leave a lasting legacy",
-    "to innovate and push boundaries",
-    "to find balance and harmony",
-    "to share their story with the world",
-    "to make every moment count",
-    "to learn and evolve",
-    "to bring people together",
-    "to live life to the fullest"
-  ];
-  const favours = [
-    "creative pursuits and new ideas",
-    "quiet moments of reflection",
-    "adventure and spontaneity",
-    "deep conversations",
-    "helping others",
-    "exploring the outdoors",
-    "music and the arts",
-    "technology and innovation",
-    "spending time with loved ones",
-    "learning and discovery",
-    "expressing themselves",
-    "trying new foods",
-    "staying active",
-    "reading and storytelling",
-    "building things from scratch",
-    "solving puzzles",
-    "making people laugh",
-    "capturing memories",
-    "finding beauty in the everyday",
-    "embracing change"
-  ];
-
-  // Randomly select one from each
-  const origin = origins[Math.floor(Math.random() * origins.length)];
-  const ambition = ambitions[Math.floor(Math.random() * ambitions.length)];
-  const favour = favours[Math.floor(Math.random() * favours.length)];
-
-  // Partner personas (100 unique for each gender, no numbers)
-  const partnerPersonasMale = [
-    "free-spirited artist who loves midnight adventures",
-    "thoughtful scientist with a passion for jazz and philosophy",
-    "world-traveling chef who collects rare spices",
-    "gentle poet who finds beauty in the everyday",
-    "ambitious entrepreneur with a heart of gold",
-    "adventurous photographer who chases sunsets",
-    "kind-hearted teacher who inspires everyone",
-    "mysterious novelist with a love for old libraries",
-    "playful musician who writes love songs",
-    "dedicated doctor who volunteers abroad",
-    "charming architect who dreams in blueprints",
-    "witty comedian who always brings laughter",
-    "passionate activist who stands for justice",
-    "quiet philosopher who ponders the stars",
-    "energetic athlete who loves a challenge",
-    "creative designer with a flair for color",
-    "curious historian who brings the past to life",
-    "compassionate veterinarian who rescues animals",
-    "brilliant engineer who builds the future",
-    "soulful dancer who moves with grace",
-    "loyal firefighter with a brave spirit",
-    "gentle gardener who grows rare flowers",
-    "visionary filmmaker who tells powerful stories",
-    "resourceful pilot who loves the clouds",
-    "dedicated coach who motivates greatness",
-    "inventive scientist who dreams big",
-    "humble craftsman who works with his hands",
-    "cheerful barista who knows every customer's name",
-    "wise mentor who gives the best advice",
-    "playful magician who loves surprises",
-    "caring nurse who brings comfort",
-    "fearless explorer who seeks the unknown",
-    "chill surfer who lives for the waves",
-    "meticulous tailor who creates timeless fashion",
-    "friendly librarian who loves mysteries",
-    "optimistic farmer who loves the land",
-    "dedicated park ranger who protects nature",
-    "inventive game developer with wild ideas",
-    "thoughtful therapist who listens deeply",
-    "passionate chef who creates culinary art",
-    "gentle yoga instructor who radiates calm",
-    "fun-loving DJ who lives for the beat",
-    "brave mountain climber who seeks new heights",
-    "curious astronomer who maps the stars",
-    "generous philanthropist who gives back",
-    "quirky inventor who loves gadgets",
-    "sincere journalist who tells real stories",
-    "adventurous sailor who loves the sea",
-    "dedicated scientist who solves mysteries",
-    "imaginative animator who brings dreams to life",
-    // 50 more creative personas:
-    "jazz-loving botanist with a green thumb",
-    "mountain guide with a gentle laugh",
-    "urban beekeeper who makes wild honey",
-    "street artist who paints city walls",
-    "vintage car restorer with a love for history",
-    "craft beer brewer with a taste for adventure",
-    "wildlife photographer who travels the world",
-    "salsa dancer who brings energy to every room",
-    "comic book writer with a vivid imagination",
-    "glassblower who creates shimmering art",
-    "marathon runner with endless stamina",
-    "puzzle master who loves a challenge",
-    "folk singer with a soulful voice",
-    "robotics engineer who dreams of the future",
-    "urban gardener who grows rooftop jungles",
-    "muralist who colors the city",
-    "kite surfer who rides the wind",
-    "opera singer with a powerful presence",
-    "potter who shapes beauty from clay",
-    "calligrapher with elegant handwriting",
-    "mountain biker who conquers trails",
-    "sushi chef with precise skills",
-    "antique collector with a story for every piece",
-    "parkour athlete who leaps over obstacles",
-    "cinematographer who captures magic on film",
-    "stand-up paddleboarder who loves the water",
-    "urban explorer who finds hidden gems",
-    "craft chocolate maker with a sweet touch",
-    "digital nomad who works from anywhere",
-    "improv actor who lives in the moment",
-    "swing dancer with infectious joy",
-    "birdwatcher with a keen eye",
-    "tattoo artist with a creative soul",
-    "rock climber who scales new heights",
-    "fashion stylist with a bold vision",
-    "street food vendor with global flavors",
-    "bonsai cultivator with patience",
-    "spoken word poet with a message",
-    "surfboard shaper who crafts the perfect ride",
-    "urban cyclist who zips through the city",
-    "guitar maker with a love for music",
-    "hot air balloon pilot with a sense of wonder",
-    "mosaic artist who pieces together beauty",
-    "sailing instructor who loves the open sea",
-    "ice sculptor with a cool touch",
-    "park designer who creates green spaces",
-    "vinyl record collector with a classic taste",
-    "drone pilot who sees the world from above",
-    "escape room designer with a clever mind"
-  ];
-  const partnerPersonasFemale = [
-    "free-spirited artist who loves midnight adventures",
-    "thoughtful scientist with a passion for jazz and philosophy",
-    "world-traveling chef who collects rare spices",
-    "gentle poet who finds beauty in the everyday",
-    "ambitious entrepreneur with a heart of gold",
-    "adventurous photographer who chases sunsets",
-    "kind-hearted teacher who inspires everyone",
-    "mysterious novelist with a love for old libraries",
-    "playful musician who writes love songs",
-    "dedicated doctor who volunteers abroad",
-    "charming architect who dreams in blueprints",
-    "witty comedian who always brings laughter",
-    "passionate activist who stands for justice",
-    "quiet philosopher who ponders the stars",
-    "energetic athlete who loves a challenge",
-    "creative designer with a flair for color",
-    "curious historian who brings the past to life",
-    "compassionate veterinarian who rescues animals",
-    "brilliant engineer who builds the future",
-    "soulful dancer who moves with grace",
-    "loyal firefighter with a brave spirit",
-    "gentle gardener who grows rare flowers",
-    "visionary filmmaker who tells powerful stories",
-    "resourceful pilot who loves the clouds",
-    "dedicated coach who motivates greatness",
-    "inventive scientist who dreams big",
-    "humble craftswoman who works with her hands",
-    "cheerful barista who knows every customer's name",
-    "wise mentor who gives the best advice",
-    "playful magician who loves surprises",
-    "caring nurse who brings comfort",
-    "fearless explorer who seeks the unknown",
-    "chill surfer who lives for the waves",
-    "meticulous tailor who creates timeless fashion",
-    "friendly librarian who loves mysteries",
-    "optimistic farmer who loves the land",
-    "dedicated park ranger who protects nature",
-    "inventive game developer with wild ideas",
-    "thoughtful therapist who listens deeply",
-    "passionate chef who creates culinary art",
-    "gentle yoga instructor who radiates calm",
-    "fun-loving DJ who lives for the beat",
-    "brave mountain climber who seeks new heights",
-    "curious astronomer who maps the stars",
-    "generous philanthropist who gives back",
-    "quirky inventor who loves gadgets",
-    "sincere journalist who tells real stories",
-    "adventurous sailor who loves the sea",
-    "dedicated scientist who solves mysteries",
-    "imaginative animator who brings dreams to life",
-    // 50 more creative personas:
-    "jazz-loving botanist with a green thumb",
-    "mountain guide with a gentle laugh",
-    "urban beekeeper who makes wild honey",
-    "street artist who paints city walls",
-    "vintage car restorer with a love for history",
-    "craft beer brewer with a taste for adventure",
-    "wildlife photographer who travels the world",
-    "salsa dancer who brings energy to every room",
-    "comic book writer with a vivid imagination",
-    "glassblower who creates shimmering art",
-    "marathon runner with endless stamina",
-    "puzzle master who loves a challenge",
-    "folk singer with a soulful voice",
-    "robotics engineer who dreams of the future",
-    "urban gardener who grows rooftop jungles",
-    "muralist who colors the city",
-    "kite surfer who rides the wind",
-    "opera singer with a powerful presence",
-    "potter who shapes beauty from clay",
-    "calligrapher with elegant handwriting",
-    "mountain biker who conquers trails",
-    "sushi chef with precise skills",
-    "antique collector with a story for every piece",
-    "parkour athlete who leaps over obstacles",
-    "cinematographer who captures magic on film",
-    "stand-up paddleboarder who loves the water",
-    "urban explorer who finds hidden gems",
-    "craft chocolate maker with a sweet touch",
-    "digital nomad who works from anywhere",
-    "improv actor who lives in the moment",
-    "swing dancer with infectious joy",
-    "birdwatcher with a keen eye",
-    "tattoo artist with a creative soul",
-    "rock climber who scales new heights",
-    "fashion stylist with a bold vision",
-    "street food vendor with global flavors",
-    "bonsai cultivator with patience",
-    "spoken word poet with a message",
-    "surfboard shaper who crafts the perfect ride",
-    "urban cyclist who zips through the city",
-    "guitar maker with a love for music",
-    "hot air balloon pilot with a sense of wonder",
-    "mosaic artist who pieces together beauty",
-    "sailing instructor who loves the open sea",
-    "ice sculptor with a cool touch",
-    "park designer who creates green spaces",
-    "vinyl record collector with a classic taste",
-    "drone pilot who sees the world from above",
-    "escape room designer with a clever mind"
-  ];
-  // Pick a unique, unused partner persona for this session
-  let partnerIdx;
-  let partnerList;
-  let possessivePronoun;
-  if (gender === 'male') {
-    partnerList = partnerPersonasFemale;
-    possessivePronoun = 'His';
-    partnerIdx = getUniqueRandomIndex(usedPartnerPersonasMale, partnerList.length);
-  } else {
-    partnerList = partnerPersonasMale;
-    possessivePronoun = 'Her';
-    partnerIdx = getUniqueRandomIndex(usedPartnerPersonasFemale, partnerList.length);
-  }
-  const partnerPersona = partnerList[partnerIdx];
-
-  // Compose the full description with correct grammar and pronouns, in paragraphs
-  const combinedPersonality = `${pronouns.subject} attracts ${friendTypes[Math.floor(Math.random() * friendTypes.length)]}, loves ${loves[Math.floor(Math.random() * loves.length)]}, is often called a ${calledYou[Math.floor(Math.random() * calledYou.length)]}, and was born on a ${bornOn[Math.floor(Math.random() * bornOn.length)]}. At school, ${pronouns.subject.toLowerCase()} was called a ${schoolNames[Math.floor(Math.random() * schoolNames.length)]}.`;
-
-  const paragraphs = [
-    `${moodPhrase}, and ${carriesPhrases[Math.floor(Math.random() * carriesPhrases.length)]}.`,
-    `${pronouns.subject} also appears to be around ${Math.round(age)} years old.`,
-    `${pronouns.subject} seems to come from ${origin}, with ambitions to ${ambition.replace('their', pronouns.possessive)}.`,
-    `${pronouns.subject} appears to favour ${favour}.`,
-    `${possessivePronoun} perfect partner is a ${partnerPersona}.`,
-    combinedPersonality
-  ];
-  const seasonalPhrase = getSeasonalPhrase();
-  if (seasonalPhrase) paragraphs.push(seasonalPhrase);
-  return paragraphs.join('\n\n');
 };
 
 export default function SelfieMood() {
@@ -882,6 +387,7 @@ export default function SelfieMood() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const shareRef = useRef<HTMLDivElement>(null);
   const [shareWarning, setShareWarning] = useState('');
+  const [mode, setMode] = useState<'nice' | 'roast'>('nice');
 
   useEffect(() => {
     const loadModels = async () => {
@@ -959,7 +465,7 @@ export default function SelfieMood() {
       console.log('Gender:', gender);
       console.log('Expressions:', expressions);
       
-      setStatement(generateDescription(age, gender, expressions));
+      setStatement(generateDescription(age, gender, expressions, mode));
     } catch (err) {
       console.error('Error analyzing face:', err);
       setStatement('Error analyzing face. Please try again.');
@@ -1030,6 +536,13 @@ export default function SelfieMood() {
     alert('To share on Facebook: 1) Download the image, 2) Go to Facebook, 3) Create a post and upload the image. Facebook does not allow direct image sharing from web apps.');
     window.open('https://www.facebook.com/', '_blank');
   };
+
+  useEffect(() => {
+    if (imageUrl && imgLoaded && statement) {
+      handleAnalyze();
+    }
+    // eslint-disable-next-line
+  }, [mode]);
 
   return (
     <div className="h-screen w-screen flex flex-col bg-gradient-to-br from-pink-100 via-blue-100 to-teal-100">
@@ -1133,6 +646,16 @@ export default function SelfieMood() {
       <footer className="w-full text-center py-4 text-blue-900/60 text-sm font-medium select-none">
         Copyright (c) Lou Schillaci
       </footer>
+
+      {/* Roast Mode Toggle */}
+      <div className="flex justify-center my-4">
+        <button
+          onClick={() => setMode(mode === 'nice' ? 'roast' : 'nice')}
+          className="px-6 py-2 rounded-xl font-bold shadow-lg bg-gradient-to-r from-pink-400 to-yellow-400 text-white hover:from-pink-500 hover:to-yellow-500 transition-all"
+        >
+          {mode === 'nice' ? 'Switch to Roast Mode' : 'Switch to Nice Mode'}
+        </button>
+      </div>
     </div>
   );
 } 
