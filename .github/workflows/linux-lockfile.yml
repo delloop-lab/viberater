@@ -1,0 +1,15 @@
+name: Regenerate lockfile on Linux
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: rm -rf node_modules package-lock.json
+      - run: npm install
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Regenerate lockfile on Linux for Vercel"
