@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc --project tsconfig.json --noEmit && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+	"type-check": "tsc --project tsconfig.json"
   },
   "dependencies": {
     "face-api.js": "^0.22.2",
