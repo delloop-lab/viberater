@@ -561,11 +561,11 @@ export default function SelfieMood() {
       try {
         setError('');
         setLoadingStatus('Loading face detection model...');
-        await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+        await faceapi.nets.tinyFaceDetector.load('/models');
         setLoadingStatus('Loading age and gender model...');
-        await faceapi.nets.ageGenderNet.loadFromUri('/models');
+        await faceapi.nets.ageGenderNet.load('/models');
         setLoadingStatus('Loading expression model...');
-        await faceapi.nets.faceExpressionNet.loadFromUri('/models');
+        await faceapi.nets.faceExpressionNet.load('/models');
         setLoadingStatus('');
         setModelsLoaded(true);
         console.log('All models loaded successfully');
