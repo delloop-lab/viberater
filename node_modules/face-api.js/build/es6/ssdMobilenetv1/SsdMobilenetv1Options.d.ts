@@ -7,6 +7,6 @@ export declare class SsdMobilenetv1Options {
     private _minConfidence;
     private _maxResults;
     constructor({ minConfidence, maxResults }?: ISsdMobilenetv1Options);
-    readonly minConfidence: number;
-    readonly maxResults: number;
+    get minConfidence(): number;
+    get maxResults(): number;
 }

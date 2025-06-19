@@ -13,4 +13,94 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-in {
+  animation: fadeIn 0.5s;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); animation-timing-function: cubic-bezier(0.8,0,1,1); }
+  50% { transform: translateY(-25%); animation-timing-function: cubic-bezier(0,0,0.2,1); }
+}
+.animate-bounce {
+  animation: bounce 0.4s;
+}
+
+@keyframes bounceSmooth {
+  0%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-18%); }
+  50% { transform: translateY(-30%); }
+  70% { transform: translateY(-18%); }
+}
+.animate-bounce-smooth {
+  animation: bounceSmooth 0.7s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes fadeInSmooth {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-fade-in-smooth {
+  animation: fadeInSmooth 0.7s cubic-bezier(0.4,0,0.2,1) both;
+}
+
+/* Floating Hearts Animation */
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-200px) scale(1.8);
+    opacity: 0;
+  }
+}
+
+.floating-heart {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  animation: floatUp 3s ease-out forwards;
+  pointer-events: none;
+  opacity: 0.8;
+  z-index: 1000;
+}
+
+/* Floating Daggers Animation */
+@keyframes floatDownDagger {
+  0% {
+    transform: translateY(-60px) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1.6) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.floating-dagger {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  /* animation: floatDownDagger 2.5s ease-out forwards; */
+  pointer-events: none;
+  opacity: 0.9;
+  z-index: 1000;
+}
+
+@keyframes rainDownDagger {
+  0% {
+    transform: translateY(0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(80px) scale(1.4) rotate(360deg);
+    opacity: 0;
+  }
 } 
