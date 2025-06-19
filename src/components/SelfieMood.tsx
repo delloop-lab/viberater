@@ -1,9 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
+import * as faceapi from 'face-api.js';
 import html2canvas from 'html2canvas';
 import { generateRoast as generateLevelRoast } from "../roastPhrases";
-
-// Import face-api.js using require to avoid TypeScript issues
-const faceapi = require('face-api.js');
 
 interface FaceExpressions {
   happy: number;
@@ -563,10 +561,13 @@ export default function SelfieMood() {
       try {
         setError('');
         setLoadingStatus('Loading face detection model...');
+        // @ts-ignore
         await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
         setLoadingStatus('Loading age and gender model...');
+        // @ts-ignore
         await faceapi.nets.ageGenderNet.loadFromUri('/models');
         setLoadingStatus('Loading expression model...');
+        // @ts-ignore
         await faceapi.nets.faceExpressionNet.loadFromUri('/models');
         setLoadingStatus('');
         setModelsLoaded(true);
