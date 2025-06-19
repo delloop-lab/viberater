@@ -651,14 +651,14 @@ export default function SelfieMood() {
     }
     const dataUrl = canvas.toDataURL('image/jpeg');
     const blob = await (await fetch(dataUrl)).blob();
-    const file = new File([blob], 'viberater.jpg', { type: 'image/jpeg' });
+    const file = new File([blob], 'viberaters.jpg', { type: 'image/jpeg' });
 
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({ files: [file], title: 'VibeRater', text: 'Check out my VibeRater result!' });
+      await navigator.share({ files: [file], title: 'VibeRaters', text: 'Check out my VibeRaters result!' });
     } else {
       const link = document.createElement('a');
       link.href = dataUrl;
-      link.download = 'viberater.jpg';
+      link.download = 'viberaters.jpg';
       link.click();
     }
   };
@@ -674,7 +674,7 @@ export default function SelfieMood() {
     const dataUrl = canvas.toDataURL('image/jpeg');
     const link = document.createElement('a');
     link.href = dataUrl;
-    link.download = 'viberater.jpg';
+    link.download = 'viberaters.jpg';
     link.click();
   };
 
@@ -729,7 +729,7 @@ export default function SelfieMood() {
         if (blob) {
           const formData = new FormData();
           formData.append('file', blob);
-          formData.append('upload_preset', 'viberater');
+          formData.append('upload_preset', 'viberaters');
           try {
             const response = await fetch('https://api.cloudinary.com/v1_1/dovuirnzm/image/upload', {
               method: 'POST',
@@ -1018,7 +1018,7 @@ export default function SelfieMood() {
       {/* Header - Fixed height */}
       <div className="h-[90px] shrink-0 p-2 text-center">
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-transparent bg-clip-text drop-shadow-lg">
-          VibeRater
+          VibeRaters
         </h1>
         <div className="mt-1 flex justify-center">
           <span className="text-base md:text-lg lg:text-xl font-medium text-blue-700/80 drop-shadow-sm px-4 py-1 rounded-xl">
@@ -1077,7 +1077,7 @@ export default function SelfieMood() {
                     </div>
                     <div className="absolute bottom-4 right-4 pointer-events-none">
                       <div ref={watermarkRef} className="text-3xl font-bold text-gray-300 select-none">
-                        VibeRater
+                        VibeRaters
                       </div>
                     </div>
                   </div>
@@ -1200,7 +1200,7 @@ export default function SelfieMood() {
               {/* Twitter */}
               <button
                 onClick={() => {
-                  const text = encodeURIComponent('Check out my VibeRater result!');
+                  const text = encodeURIComponent('Check out my VibeRaters result!');
                   const url = encodeURIComponent(imgurUrl || window.location.origin);
                   window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
                 }}
@@ -1214,7 +1214,7 @@ export default function SelfieMood() {
               {/* Facebook */}
               <button
                 onClick={() => {
-                  const text = encodeURIComponent('Check out my VibeRater result!');
+                  const text = encodeURIComponent('Check out my VibeRaters result!');
                   const url = encodeURIComponent(imgurUrl || window.location.origin);
                   window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank');
                 }}
@@ -1228,7 +1228,7 @@ export default function SelfieMood() {
               {/* WhatsApp */}
               <button
                 onClick={() => {
-                  const text = encodeURIComponent('Check out my VibeRater result! ' + (imgurUrl || window.location.origin));
+                  const text = encodeURIComponent('Check out my VibeRaters result! ' + (imgurUrl || window.location.origin));
                   window.open(`https://wa.me/?text=${text}`, '_blank');
                 }}
                 className="w-12 h-12 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-lg hover:bg-[#1da851] transition-all duration-200"
