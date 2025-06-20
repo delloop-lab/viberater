@@ -598,7 +598,7 @@ export default function SelfieMood() {
                   htmlFor="file-upload"
                   className="block w-full px-4 py-2 text-center bg-blue-500 text-white font-semibold rounded-xl cursor-pointer hover:bg-blue-600 transition-all duration-300 shadow-md hover:shadow-xl border border-white/60 backdrop-blur-md"
                 >
-                  Pick a Face
+                  Upload someone's selfie
                 </label>
               </div>
             </div>
