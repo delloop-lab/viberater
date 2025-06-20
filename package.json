@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "vite build",
     "type-check": "tsc --noEmit",
     "preview": "vite preview",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx"
@@ -34,6 +34,6 @@
     "vite": "5.2.10"
   },
   "engines": {
-    "node": "18.x"
+    "node": ">=20.0.0"
   }
 }
