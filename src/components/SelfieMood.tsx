@@ -569,20 +569,20 @@ export default function SelfieMood() {
   };
 
   return (
-    <div className="h-screen w-screen flex flex-col overflow-hidden bg-gradient-to-br from-pink-100 via-blue-100 to-teal-100">
+    <div className="min-h-screen w-full flex flex-col bg-gradient-to-br from-pink-100 via-blue-100 to-teal-100">
       {/* Header - Fixed height */}
       <div className="h-[90px] shrink-0 p-2 text-center">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-transparent bg-clip-text drop-shadow-lg">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-transparent bg-clip-text drop-shadow-lg">
           VibeRaters
         </h1>
         <div className="mt-1 flex justify-center">
-          <span className="text-base md:text-lg lg:text-xl font-medium text-blue-700/80 drop-shadow-sm px-4 py-1 rounded-xl">
+          <span className="text-sm sm:text-base md:text-lg lg:text-xl font-medium text-blue-700/80 drop-shadow-sm px-2 sm:px-4 py-1 rounded-xl">
             Pick a face, any face, we'll generate the vibe and give you the words.
           </span>
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-start p-2 w-full">
+      <div className="flex-1 flex flex-col items-center justify-start p-2 w-full min-h-0">
         <div className="w-full max-w-6xl">
           <div className="flex flex-col space-y-2 w-full">
             <div className="flex-none">
@@ -606,7 +606,7 @@ export default function SelfieMood() {
             {imageUrl && statement && (
               <div ref={shareRef} className="relative flex flex-col lg:flex-row w-full h-auto items-stretch justify-center mt-4 gap-0 lg:gap-4 bg-transparent">
                 <div className="w-full lg:w-3/5 flex items-center justify-center min-w-0">
-                  <div className="relative rounded-none overflow-hidden shadow-xl border-none bg-white/60 backdrop-blur-lg flex items-center justify-center w-full" style={{ height: 'min(50vh, 400px)' }}>
+                  <div className="relative rounded-none overflow-hidden shadow-xl border-none bg-white/60 backdrop-blur-lg flex items-center justify-center w-full" style={{ height: 'min(40vh, 350px)' }}>
                     <div className="container h-full w-full flex items-center justify-center p-2">
                       {imageUrl && (
                         <div className="relative w-full h-full flex items-center justify-center">
@@ -632,22 +632,22 @@ export default function SelfieMood() {
                       )}
                     </div>
                     <div className="absolute bottom-4 right-4 pointer-events-none">
-                      <div ref={watermarkRef} className="text-3xl font-bold text-gray-300 select-none">
+                      <div ref={watermarkRef} className="text-2xl sm:text-3xl font-bold text-gray-300 select-none">
                         VibeRaters
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className="w-full lg:w-2/5 flex items-center justify-center min-w-0">
-                  <div className="bg-white/70 backdrop-blur-lg rounded-none p-8 border-none shadow-xl w-full h-full flex items-center">
+                  <div className="bg-white/70 backdrop-blur-lg rounded-none p-4 sm:p-6 lg:p-8 border-none shadow-xl w-full h-full flex items-center">
                     {statement === "I'm Ready!" ? (
                       <div className="w-full flex flex-col items-center justify-center">
                         <button
                           onClick={handleHawkingComment}
-                          className="px-6 py-3 rounded-xl font-extrabold shadow-lg bg-white text-gray-800 text-lg hover:bg-gray-100 transition-all border border-gray-200 flex items-center gap-2"
+                          className="px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-extrabold shadow-lg bg-white text-gray-800 text-base sm:text-lg hover:bg-gray-100 transition-all border border-gray-200 flex items-center gap-2"
                         >
                           {isAudioPlaying && (
-                            <svg className="w-5 h-5 animate-pulse" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <svg className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                               <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.793L4.5 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.5l3.883-3.707zM12.293 7.293a1 1 0 011.414 0L15 8.586l1.293-1.293a1 1 0 111.414 1.414L16.414 10l1.293 1.293a1 1 0 01-1.414 1.414L15 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L13.586 10l-1.293-1.293a1 1 0 010-1.414z" clipRule="evenodd" />
                             </svg>
                           )}
@@ -655,7 +655,7 @@ export default function SelfieMood() {
                         </button>
                       </div>
                     ) : (
-                      <p className="text-blue-900 text-lg md:text-xl lg:text-2xl leading-relaxed font-medium drop-shadow-sm whitespace-pre-line w-full">{statement}</p>
+                      <p className="text-blue-900 text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed font-medium drop-shadow-sm whitespace-pre-line w-full">{statement}</p>
                     )}
                   </div>
                 </div>
@@ -665,30 +665,30 @@ export default function SelfieMood() {
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col space-y-8 h-full">
+      <div className="flex-1 flex flex-col space-y-4 sm:space-y-8 h-full min-h-0">
         {loadingStatus && (
-          <div className="bg-blue-200/60 border border-blue-300 text-blue-800 px-4 py-3 rounded-xl shadow-sm">
+          <div className="bg-blue-200/60 border border-blue-300 text-blue-800 px-4 py-3 rounded-xl shadow-sm text-sm sm:text-base">
             {loadingStatus}
           </div>
         )}
         
         {error && (
-          <div className="bg-red-200/60 border border-red-300 text-red-800 px-4 py-3 rounded-xl shadow-sm">
+          <div className="bg-red-200/60 border border-red-300 text-red-800 px-4 py-3 rounded-xl shadow-sm text-sm sm:text-base">
             {error}
           </div>
         )}
       </div>
 
       {imageUrl && statement && imgLoaded && (
-        <div className="w-full flex flex-col items-center mt-2 overflow-y-auto flex-shrink-0" style={{ maxHeight: 'calc(100vh - 120px - min(50vh, 400px) - 4rem)' }}>
+        <div className="w-full flex flex-col items-center mt-2 pb-4 overflow-y-auto flex-shrink-0">
           {/* Roast Level Buttons */}
-          <div className="flex flex-col gap-4 my-2 justify-center items-center w-full max-w-full">
+          <div className="flex flex-col gap-2 sm:gap-4 my-1 sm:my-2 justify-center items-center w-full max-w-full px-2">
             {/* Tell them how you feel */}
-            <div className="flex flex-col gap-3 items-center">
-              <h3 className="text-xl md:text-2xl font-bold text-blue-900 drop-shadow-sm">
+            <div className="flex flex-col gap-1 sm:gap-3 items-center">
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-blue-900 drop-shadow-sm text-center">
                 Tell them how you feel
               </h3>
-              <div className="flex flex-row gap-4 justify-center items-center">
+              <div className="flex flex-row gap-1 sm:gap-4 justify-center items-center flex-wrap">
                 <button
                   onClick={() => {
                     enableAudio(); // Enable audio on first interaction
@@ -696,7 +696,7 @@ export default function SelfieMood() {
                     const faceCenter = getFaceCenter();
                     showFloatingHearts();
                   }}
-                  className={`px-4 py-2 rounded-xl font-extrabold shadow-lg bg-pink-500 text-white text-base md:text-lg hover:bg-pink-600 transition-all ${buttonBounce === 'L' ? 'animate-bounce-smooth' : ''}`}
+                  className={`px-2 sm:px-4 py-0.5 sm:py-2 rounded-lg sm:rounded-xl font-bold sm:font-extrabold shadow-md sm:shadow-lg bg-pink-500 text-white text-xs sm:text-base md:text-lg hover:bg-pink-600 transition-all ${buttonBounce === 'L' ? 'animate-bounce-smooth' : ''}`}
                 >
                   Love You !!
                 </button>
@@ -707,7 +707,7 @@ export default function SelfieMood() {
                     const faceCenter = getFaceCenter();
                     showFloatingDaggers(faceCenter.x, faceCenter.y);
                   }}
-                  className={`px-4 py-2 rounded-xl font-extrabold shadow-lg bg-gray-400 text-gray-900 text-base md:text-lg hover:bg-gray-500 transition-all ${buttonBounce === 'H' ? 'animate-bounce' : ''}`}
+                  className={`px-2 sm:px-4 py-0.5 sm:py-2 rounded-lg sm:rounded-xl font-bold sm:font-extrabold shadow-md sm:shadow-lg bg-gray-400 text-gray-900 text-xs sm:text-base md:text-lg hover:bg-gray-500 transition-all ${buttonBounce === 'H' ? 'animate-bounce' : ''}`}
                 >
                   No Like You !!
                 </button>
@@ -715,11 +715,11 @@ export default function SelfieMood() {
             </div>
             
             {/* Roast them how you will */}
-            <div className="flex flex-col gap-3 items-center">
-              <h3 className="text-xl md:text-2xl font-bold text-blue-900 drop-shadow-sm">
+            <div className="flex flex-col gap-1 sm:gap-3 items-center">
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-blue-900 drop-shadow-sm text-center">
                 Roast them how you will
               </h3>
-              <div className="flex flex-row flex-wrap gap-4 justify-center items-center">
+              <div className="flex flex-row flex-wrap gap-1 sm:gap-4 justify-center items-center">
                 <button
                   onClick={() => {
                     enableAudio(); // Enable audio on first interaction
@@ -732,7 +732,7 @@ export default function SelfieMood() {
                     }
                     handleLevelRoast('G');
                   }}
-                  className={`px-4 py-2 rounded-xl font-extrabold shadow-lg bg-green-500 text-white text-base md:text-lg hover:bg-green-600 transition-all ${buttonBounce === 'G' ? 'animate-bounce-smooth' : ''}`}
+                  className={`px-2 sm:px-4 py-0.5 sm:py-2 rounded-lg sm:rounded-xl font-bold sm:font-extrabold shadow-md sm:shadow-lg bg-green-500 text-white text-xs sm:text-base md:text-lg hover:bg-green-600 transition-all ${buttonBounce === 'G' ? 'animate-bounce-smooth' : ''}`}
                 >
                   Gentle
                 </button>
@@ -748,7 +748,7 @@ export default function SelfieMood() {
                     }
                     handleLevelRoast('P');
                   }}
-                  className={`px-4 py-2 rounded-xl font-extrabold shadow-lg bg-yellow-400 text-gray-900 text-base md:text-lg hover:bg-yellow-500 transition-all ${buttonBounce === 'P' ? 'animate-bounce-smooth' : ''}`}
+                  className={`px-2 sm:px-4 py-0.5 sm:py-2 rounded-lg sm:rounded-xl font-bold sm:font-extrabold shadow-md sm:shadow-lg bg-yellow-400 text-gray-900 text-xs sm:text-base md:text-lg hover:bg-yellow-500 transition-all ${buttonBounce === 'P' ? 'animate-bounce-smooth' : ''}`}
                 >
                   Playful
                 </button>
@@ -764,7 +764,7 @@ export default function SelfieMood() {
                     }
                     handleLevelRoast('A');
                   }}
-                  className={`px-4 py-2 rounded-xl font-extrabold shadow-lg bg-blue-500 text-white text-base md:text-lg hover:bg-blue-600 transition-all ${buttonBounce === 'A' ? 'animate-bounce-smooth' : ''}`}
+                  className={`px-2 sm:px-4 py-0.5 sm:py-2 rounded-lg sm:rounded-xl font-bold sm:font-extrabold shadow-md sm:shadow-lg bg-blue-500 text-white text-xs sm:text-base md:text-lg hover:bg-blue-600 transition-all ${buttonBounce === 'A' ? 'animate-bounce-smooth' : ''}`}
                 >
                   Average
                 </button>
@@ -780,7 +780,7 @@ export default function SelfieMood() {
                     }
                     handleLevelRoast('XXX');
                   }}
-                  className={`px-4 py-2 rounded-xl font-extrabold shadow-lg bg-black text-white text-base md:text-lg hover:bg-gray-900 transition-all ${buttonBounce === 'XXX' ? 'animate-bounce' : ''}`}
+                  className={`px-2 sm:px-4 py-0.5 sm:py-2 rounded-lg sm:rounded-xl font-bold sm:font-extrabold shadow-md sm:shadow-lg bg-black text-white text-xs sm:text-base md:text-lg hover:bg-gray-900 transition-all ${buttonBounce === 'XXX' ? 'animate-bounce' : ''}`}
                 >
                   Extreme
                 </button>
@@ -788,11 +788,11 @@ export default function SelfieMood() {
             </div>
           </div>
           {/* Social Media Share Section */}
-          <div className="w-full flex flex-col items-center mt-6">
-            <h3 className="text-xl md:text-2xl font-bold text-blue-900 drop-shadow-sm mb-2">
+          <div className="w-full flex flex-col items-center mt-2 sm:mt-6">
+            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-blue-900 drop-shadow-sm mb-1 sm:mb-2 text-center">
               Share it with them
             </h3>
-            <div className="flex flex-wrap gap-3 justify-center">
+            <div className="flex flex-wrap gap-1 sm:gap-3 justify-center">
               {/* Twitter */}
               <button
                 onClick={() => {
@@ -800,12 +800,12 @@ export default function SelfieMood() {
                   const url = encodeURIComponent(cloudinaryUrl || window.location.origin);
                   window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
                 }}
-                className="w-12 h-12 rounded-full bg-[#1DA1F2] text-white flex items-center justify-center shadow-lg hover:bg-[#0d8ddb] transition-all duration-200"
+                className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-[#1DA1F2] text-white flex items-center justify-center shadow-lg hover:bg-[#0d8ddb] transition-all duration-200"
                 aria-label="Share on Twitter"
                 title="Share on Twitter"
                 disabled={cloudinaryLoading}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M22.46 5.924c-.793.352-1.645.59-2.54.698a4.48 4.48 0 0 0 1.965-2.475 8.94 8.94 0 0 1-2.828 1.082A4.48 4.48 0 0 0 16.11 4c-2.48 0-4.49 2.014-4.49 4.5 0 .353.04.697.116 1.027C7.728 9.37 4.1 7.6 1.67 4.905a4.48 4.48 0 0 0-.61 2.264c0 1.563.796 2.944 2.01 3.755a4.48 4.48 0 0 1-2.034-.563v.057c0 2.184 1.553 4.006 3.617 4.422a4.48 4.48 0 0 1-2.027.077c.572 1.785 2.23 3.084 4.196 3.12A8.98 8.98 0 0 1 2 19.54a12.7 12.7 0 0 0 6.92 2.03c8.303 0 12.85-6.876 12.85-12.84 0-.196-.004-.392-.013-.586A9.18 9.18 0 0 0 24 4.59a8.98 8.98 0 0 1-2.54.698z"/></svg>
+                <svg width="12" height="12" className="sm:w-4 sm:h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M22.46 5.924c-.793.352-1.645.59-2.54.698a4.48 4.48 0 0 0 1.965-2.475 8.94 8.94 0 0 1-2.828 1.082A4.48 4.48 0 0 0 16.11 4c-2.48 0-4.49 2.014-4.49 4.5 0 .353.04.697.116 1.027C7.728 9.37 4.1 7.6 1.67 4.905a4.48 4.48 0 0 0-.61 2.264c0 1.563.796 2.944 2.01 3.755a4.48 4.48 0 0 1-2.034-.563v.057c0 2.184 1.553 4.006 3.617 4.422a4.48 4.48 0 0 1-2.027.077c.572 1.785 2.23 3.084 4.196 3.12A8.98 8.98 0 0 1 2 19.54a12.7 12.7 0 0 0 6.92 2.03c8.303 0 12.85-6.876 12.85-12.84 0-.196-.004-.392-.013-.586A9.18 9.18 0 0 0 24 4.59a8.98 8.98 0 0 1-2.54.698z"/></svg>
               </button>
               {/* Facebook */}
               <button
@@ -814,12 +814,12 @@ export default function SelfieMood() {
                   const url = encodeURIComponent(cloudinaryUrl || window.location.origin);
                   window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank');
                 }}
-                className="w-12 h-12 rounded-full bg-[#1877F3] text-white flex items-center justify-center shadow-lg hover:bg-[#145db2] transition-all duration-200"
+                className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-[#1877F3] text-white flex items-center justify-center shadow-lg hover:bg-[#145db2] transition-all duration-200"
                 aria-label="Share on Facebook"
                 title="Share on Facebook"
                 disabled={cloudinaryLoading}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M22.675 0h-21.35C.595 0 0 .592 0 1.326v21.348C0 23.408.595 24 1.325 24h11.495v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.797.143v3.24l-1.918.001c-1.504 0-1.797.715-1.797 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116C23.406 24 24 23.408 24 22.674V1.326C24 .592 23.406 0 22.675 0"/></svg>
+                <svg width="12" height="12" className="sm:w-4 sm:h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M22.675 0h-21.35C.595 0 0 .592 0 1.326v21.348C0 23.408.595 24 1.325 24h11.495v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.797.143v3.24l-1.918.001c-1.504 0-1.797.715-1.797 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116C23.406 24 24 23.408 24 22.674V1.326C24 .592 23.406 0 22.675 0"/></svg>
               </button>
               {/* WhatsApp */}
               <button
@@ -827,12 +827,12 @@ export default function SelfieMood() {
                   const text = encodeURIComponent('Check out my VibeRaters result! ' + (cloudinaryUrl || window.location.origin));
                   window.open(`https://wa.me/?text=${text}`, '_blank');
                 }}
-                className="w-12 h-12 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-lg hover:bg-[#1da851] transition-all duration-200"
+                className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-lg hover:bg-[#1da851] transition-all duration-200"
                 aria-label="Share on WhatsApp"
                 title="Share on WhatsApp"
                 disabled={cloudinaryLoading}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.472-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.372-.025-.521-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.372-.01-.571-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.077 4.363.709.306 1.262.489 1.694.626.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.617h-.001a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 0 1 0 11.513C0 5.156 5.149 0 11.495 0c2.729 0 5.296 1.065 7.223 2.998a10.13 10.13 0 0 1 2.985 7.217c-.003 6.346-5.152 11.484-11.497 11.484m8.413-19.897A11.815 11.815 0 0 0 11.495 0C5.148 0 0 5.156 0 11.513c0 2.026.523 4.008 1.523 5.748L.017 24l6.305-1.654a11.876 11.876 0 0 0 5.178 1.241h.005c6.347 0 11.495-5.138 11.498-11.484a11.82 11.82 0 0 0-3.48-8.413"/></svg>
+                <svg width="12" height="12" className="sm:w-4 sm:h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.472-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.372-.025-.521-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.372-.01-.571-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.077 4.363.709.306 1.262.489 1.694.626.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.617h-.001a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374A9.86 9.86 0 0 1 0 11.513C0 5.156 5.149 0 11.495 0c2.729 0 5.296 1.065 7.223 2.998a10.13 10.13 0 0 1 2.985 7.217c-.003 6.346-5.152 11.484-11.497 11.484m8.413-19.897A11.815 11.815 0 0 0 11.495 0C5.148 0 0 5.156 0 11.513c0 2.026.523 4.008 1.523 5.748L.017 24l6.305-1.654a11.876 11.876 0 0 0 5.178 1.241h.005c6.347 0 11.495-5.138 11.498-11.484a11.82 11.82 0 0 0-3.48-8.413"/></svg>
               </button>
                           {/* Instagram */}
               <button
@@ -840,12 +840,12 @@ export default function SelfieMood() {
                   alert('Instagram does not support direct web sharing. Please download your image and upload it manually to Instagram.');
                   window.open('https://www.instagram.com/', '_blank');
                 }}
-                className="w-12 h-12 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 text-white flex items-center justify-center shadow-lg hover:from-yellow-500 hover:to-purple-700 transition-all duration-200"
+                className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 text-white flex items-center justify-center shadow-lg hover:from-yellow-500 hover:to-purple-700 transition-all duration-200"
                 aria-label="Share on Instagram"
                 title="Share on Instagram"
                 disabled={cloudinaryLoading}
               >
-                <svg width="20" height="20" viewBox="0 0 448 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9 114.9-51.3 114.9-114.9S287.7 141 224.1 141zm0 186c-39.5 0-71.5-32-71.5-71.5s32-71.5 71.5-71.5 71.5 32 71.5 71.5-32 71.5-71.5 71.5zm146.4-194.3c0 14.9-12 26.9-26.9 26.9s-26.9-12-26.9-26.9 12-26.9 26.9-26.9 26.9 12 26.9 26.9zm76.1 27.2c-1.7-35.3-9.9-66.7-36.2-92.1C385.6 9.9 354.2 1.7 318.9 0 281.7-1.7 166.3-1.7 129.1 0 93.8 1.7 62.4 9.9 37.1 35.2 9.9 62.4 1.7 93.8 0 129.1c-1.7 37.2-1.7 152.6 0 189.8 1.7 35.3 9.9 66.7 36.2 92.1 27.2 27.2 58.6 35.4 93.9 37.1 37.2 1.7 152.6 1.7 189.8 0 35.3-1.7 66.7-9.9 92.1-36.2 27.2-27.2 35.4-58.6 37.1-93.9 1.7-37.2 1.7-152.6 0-189.8zM398.8 388c-7.8 19.6-22.9 34.7-42.5 42.5-29.4 11.7-99.2 9-132.3 9s-102.9 2.6-132.3-9c-19.6-7.8-34.7-22.9-42.5-42.5-11.7-29.4-9-99.2-9-132.3s-2.6-102.9 9-132.3c7.8-19.6 22.9-34.7 42.5-42.5 29.4-11.7 99.2-9 132.3-9s102.9-2.6 132.3 9c19.6 7.8 34.7 22.9 42.5 42.5 11.7 29.4 9 99.2 9 132.3s2.6 102.9-9 132.3z"/></svg>
+                <svg width="12" height="12" className="sm:w-4 sm:h-4 md:w-5 md:h-5" viewBox="0 0 448 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9 114.9-51.3 114.9-114.9S287.7 141 224.1 141zm0 186c-39.5 0-71.5-32-71.5-71.5s32-71.5 71.5-71.5 71.5 32 71.5 71.5-32 71.5-71.5 71.5zm146.4-194.3c0 14.9-12 26.9-26.9 26.9s-26.9-12-26.9-26.9 12-26.9 26.9-26.9 26.9 12 26.9 26.9zm76.1 27.2c-1.7-35.3-9.9-66.7-36.2-92.1C385.6 9.9 354.2 1.7 318.9 0 281.7-1.7 166.3-1.7 129.1 0 93.8 1.7 62.4 9.9 37.1 35.2 9.9 62.4 1.7 93.8 0 129.1c-1.7 37.2-1.7 152.6 0 189.8 1.7 35.3 9.9 66.7 36.2 92.1 27.2 27.2 58.6 35.4 93.9 37.1 37.2 1.7 152.6 1.7 189.8 0 35.3-1.7 66.7-9.9 92.1-36.2 27.2-27.2 35.4-58.6 37.1-93.9 1.7-37.2 1.7-152.6 0-189.8zM398.8 388c-7.8 19.6-22.9 34.7-42.5 42.5-29.4 11.7-99.2 9-132.3 9s-102.9 2.6-132.3-9c-19.6-7.8-34.7-22.9-42.5-42.5-11.7-29.4-9-99.2-9-132.3s-2.6-102.9 9-132.3c7.8-19.6 22.9-34.7 42.5-42.5 29.4-11.7 99.2-9 132.3-9s102.9-2.6 132.3 9c19.6 7.8 34.7 22.9 42.5 42.5 11.7 29.4 9 99.2 9 132.3s2.6 102.9-9 132.3z"/></svg>
               </button>
               {/* TikTok */}
               <button
@@ -853,40 +853,40 @@ export default function SelfieMood() {
                   alert('TikTok does not support direct web sharing. Please download your image and upload it manually to TikTok.');
                   window.open('https://www.tiktok.com/upload', '_blank');
                 }}
-                className="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center shadow-lg hover:bg-gray-900 transition-all duration-200"
+                className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-black text-white flex items-center justify-center shadow-lg hover:bg-gray-900 transition-all duration-200"
                 aria-label="Share on TikTok"
                 title="Share on TikTok"
                 disabled={cloudinaryLoading}
               >
-                <svg width="20" height="20" viewBox="0 0 448 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M448,209.9v125.1c0,70.7-57.3,128-128,128H128C57.3,463,0,405.7,0,335V209.9C0,139.2,57.3,81.9,128,81.9h192c70.7,0,128,57.3,128,128ZM224,352a80,80,0,1,0-80-80A80,80,0,0,0,224,352Zm0-128a48,48,0,1,1-48,48A48,48,0,0,1,224,224Z"/></svg>
+                <svg width="12" height="12" className="sm:w-4 sm:h-4 md:w-5 md:h-5" viewBox="0 0 448 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M448,209.9v125.1c0,70.7-57.3,128-128,128H128C57.3,463,0,405.7,0,335V209.9C0,139.2,57.3,81.9,128,81.9h192c70.7,0,128,57.3,128,128ZM224,352a80,80,0,1,0-80-80A80,80,0,0,0,224,352Zm0-128a48,48,0,1,1-48,48A48,48,0,0,1,224,224Z"/></svg>
               </button>
               {/* Copy */}
               <button
                 onClick={handleCopy}
-                className="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-lg hover:bg-blue-600 transition-all duration-200"
+                className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-lg hover:bg-blue-600 transition-all duration-200"
                 aria-label="Copy Image URL"
                 title="Copy Image URL"
                 disabled={cloudinaryLoading}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                <svg width="12" height="12" className="sm:w-4 sm:h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
               </button>
               {/* Download */}
               <button
                 onClick={handleDownload}
-                className="w-12 h-12 rounded-full bg-green-500 text-white flex items-center justify-center shadow-lg hover:bg-green-600 transition-all duration-200"
+                className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-green-500 text-white flex items-center justify-center shadow-lg hover:bg-green-600 transition-all duration-200"
                 aria-label="Download Image"
                 title="Download Image"
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                <svg width="12" height="12" className="sm:w-4 sm:h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
               </button>
             </div>
           </div>
         </div>
       )}
       {shareWarning && (
-        <div className="mt-2 text-red-600 font-semibold">{shareWarning}</div>
+        <div className="mt-2 text-red-600 font-semibold text-sm sm:text-base px-2">{shareWarning}</div>
       )}
-      <footer className="w-full text-center py-4 text-blue-900/60 text-sm font-medium select-none">
+      <footer className="w-full text-center py-2 sm:py-4 text-blue-900/60 text-xs sm:text-sm font-medium select-none">
         Copyright (c) Lou Schillaci
       </footer>
     </div>

@@ -31,3 +31,4 @@ temp_models/
 
 # Vercel
 .vercel/
+.vercel
