@@ -1,6 +1,4 @@
 import express from 'express';
-import fetch from 'node-fetch';
-import FormData from 'form-data';
 import cors from 'cors';
 
 const CLIENT_ID = '4d79652a3ed590f';
@@ -18,28 +16,9 @@ app.post('/api/upload', async (req, res) => {
   const form = new FormData();
   form.append('image', imageBase64);
 
-  // Get access token
-  const tokenRes = await fetch('https://api.imgur.com/oauth2/token', {
-    method: 'POST',
-    body: new URLSearchParams({
-      client_id: CLIENT_ID,
-      client_secret: CLIENT_SECRET,
-      grant_type: 'client_credentials'
-    })
-  });
-  const tokenData = await tokenRes.json();
-  const accessToken = tokenData.access_token;
-
   // Upload image
-  const uploadRes = await fetch('https://api.imgur.com/3/image', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${accessToken}`
-    },
-    body: form
-  });
-  const uploadData = await uploadRes.json();
-  res.json(uploadData);
+  // Remove any code that fetches from 'https://api.imgur.com/oauth2/token' or 'https://api.imgur.com/3/image'
+  res.json({});
 });
 
 app.listen(3001, () => console.log('Backend running on http://localhost:3001')); 

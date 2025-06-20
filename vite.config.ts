@@ -10,5 +10,9 @@ export default defineConfig({
   },
   define: {
     'process.env': process.env
-  }
+  },
+  optimizeDeps: {
+    exclude: ['@ffmpeg/ffmpeg', '@ffmpeg/util']
+  },
+  assetsInclude: ['**/*.glb', '**/*.gltf', '**/*.bin', '**/*.fbx', '**/*.mp3', '**/*.wav', '**/*.json', '**/models/*-shard*'],
 }) 
