@@ -21,4 +21,33 @@ app.post('/api/upload', async (req, res) => {
   res.json({});
 });
 
+app.get('/share/:publicId', (req, res) => {
+  const { publicId } = req.params;
+  const imageUrl = `https://res.cloudinary.com/dovuirnzm/image/upload/${publicId}.jpg`;
+  const appUrl = 'https://viberaters.vercel.app';
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>VibeRaters</title>
+      <meta property="og:title" content="Check out my VibeRaters result!">
+      <meta property="og:image" content="${imageUrl}">
+      <meta property="og:url" content="${appUrl}/share/${publicId}">
+      <meta property="og:type" content="website">
+      <meta name="twitter:card" content="summary_large_image">
+      <meta name="twitter:title" content="Check out my VibeRaters result!">
+      <meta name="twitter:image" content="${imageUrl}">
+      <meta http-equiv="refresh" content="0; url=${appUrl}">
+    </head>
+    <body>
+      <p>Redirecting you to the VibeRaters app...</p>
+    </body>
+    </html>
+  `;
+  res.send(html);
+});
+
 app.listen(3001, () => console.log('Backend running on http://localhost:3001')); 
