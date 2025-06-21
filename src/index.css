@@ -124,7 +124,7 @@ html {
   width: 20px;
   height: 20px;
   font-size: 20px;
-  /* animation: floatDownDagger 2.5s ease-out forwards; */
+  animation: rainDownDagger 1.2s ease-out forwards;
   pointer-events: none;
   opacity: 0.9;
   z-index: 1000;

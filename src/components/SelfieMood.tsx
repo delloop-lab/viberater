@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import * as faceapi from 'face-api.js';
 import html2canvas from 'html2canvas';
-import { generateRoast } from '../roastPhrases';
+import { generateRoast as generateLevelRoast } from "../roastPhrases";
 
 interface FaceExpressions {
   happy: number;
@@ -67,7 +67,6 @@ export default function SelfieMood() {
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(false);
   const watermarkRef = useRef<HTMLDivElement>(null);
-  const uploadInProgressRef = useRef(false);
 
   useEffect(() => {
     const loadModels = async () => {
@@ -230,32 +229,20 @@ export default function SelfieMood() {
     window.open('https://www.facebook.com/', '_blank');
   };
 
-  // Automatically upload to Cloudinary when we have a final result
+  // Automatically upload to Cloudinary when image, statement, and imgLoaded are ready
   useEffect(() => {
-    // Only upload if we have a final result (not loading states) and haven't already uploaded
+    // Only upload if statement is not a loading message and all are ready
     if (
       !imageUrl ||
       !statement ||
       !imgLoaded ||
       statement === 'Loading image...' ||
-      statement === 'Analyzing...' ||
-      statement === "I'm Ready!" ||
       statement === '' ||
-      !shareRef.current ||
-      uploadInProgressRef.current ||
-      cloudinaryLoading
+      !shareRef.current
     ) return;
-
-    // Check if this is a final result (contains age/gender info)
-    const isFinalResult = statement.includes('year old') || statement.includes('No face detected');
-    
-    if (!isFinalResult) return;
-
-    uploadInProgressRef.current = true;
     setCloudinaryError('');
     setCloudinaryUrl(null);
     setCloudinaryLoading(true);
-    
     const autoUpload = async () => {
       console.log('=== CLOUDINARY UPLOAD DEBUG ===');
       console.log('imageUrl:', imageUrl ? 'YES' : 'NO');
@@ -275,7 +262,6 @@ export default function SelfieMood() {
         console.log('? Canvas is empty');
         setCloudinaryError('Could not capture the image. Please make sure the selfie is visible and fully loaded.');
         setCloudinaryLoading(false);
-        uploadInProgressRef.current = false;
         return;
       }
       
@@ -320,13 +306,11 @@ export default function SelfieMood() {
             setCloudinaryError('Cloudinary upload failed.');
           } finally {
             setCloudinaryLoading(false);
-            uploadInProgressRef.current = false;
           }
         } else {
           console.log('? Failed to create blob');
           setCloudinaryError('Failed to create image blob.');
           setCloudinaryLoading(false);
-          uploadInProgressRef.current = false;
         }
       }, 'image/jpeg');
     };
@@ -366,9 +350,9 @@ export default function SelfieMood() {
 
   // Update handleLevelRoast to only set the roast, not speak automatically
   const handleLevelRoast = (level: 'G' | 'P' | 'A' | 'X' | 'XXX' | 'L' | 'H') => {
-    const roastText = generateRoast(level);
+    const roastText = generateLevelRoast(level);
     setRoast(roastText);
-    // Don't clear statement - keep the original result visible
+    setStatement("");
     setSecondStatement("");
     setLastRoastLevel(level);
     setButtonBounce(level);
@@ -391,108 +375,6 @@ export default function SelfieMood() {
         alert('Failed to copy roast.');
       }
     }
-  };
-
-  const hawkingComments = [
-    "I have spent my life trying to understand the universe. Your selfie, however, remains a mystery beyond even my comprehension.",
-    "The laws of physics suggest that no two objects can occupy the same space. Your selfie seems to be challenging this fundamental principle.",
-    "Black holes are known for their intense gravitational pull, but your selfie's ability to attract attention might be even stronger.",
-    "Time is relative, they say. Looking at your selfie, I'm not sure if we're in the past, present, or a parallel universe.",
-    "The theory of relativity explains how space and time are connected. Your selfie seems to exist in a dimension all its own.",
-    "Quantum mechanics suggests particles can be in multiple states at once. Your selfie appears to be simultaneously beautiful and bewildering.",
-    "The Big Bang created our universe. Your selfie might have created a new one.",
-    "Dark matter makes up 85% of the universe. Your selfie's charm might be the missing 15%.",
-    "The speed of light is constant, but your selfie's ability to brighten a room is variable and quite impressive.",
-    "Gravity is the weakest of the fundamental forces. Your selfie's gravitational pull, however, is remarkably strong.",
-    "The uncertainty principle states we can't know both position and momentum. Your selfie's position on the coolness scale is equally uncertain.",
-    "String theory suggests multiple dimensions. Your selfie seems to have discovered a new one: the dimension of style.",
-    "The expansion of the universe is accelerating. So is my confusion when looking at your selfie.",
-    "Neutrinos can pass through matter without interaction. Your selfie's ability to pass through social media without likes is equally mysterious.",
-    "The multiverse theory suggests parallel universes. Your selfie might be from the most stylish one.",
-    "Entropy always increases in a closed system. Your selfie's ability to decrease my understanding of photography is remarkable.",
-    "The Higgs boson gives particles mass. Your selfie gives my brain mass confusion.",
-    "Wormholes might connect distant parts of space. Your selfie connects distant parts of my sense of humor.",
-    "The cosmic microwave background is the oldest light in the universe. Your selfie might be the newest form of art.",
-    "Dark energy is causing the universe to expand. Your selfie is causing my eyebrows to raise.",
-    "The anthropic principle suggests the universe is fine-tuned for life. Your selfie is fine-tuned for causing existential questions.",
-    // Adding 20 more comments
-    "The Schrödinger's cat thought experiment suggests a cat can be both alive and dead. Your selfie seems to be both perfect and imperfect simultaneously.",
-    "The Heisenberg uncertainty principle states we can't measure position and velocity simultaneously. Your selfie's position on the coolness scale is equally uncertain.",
-    "The theory of everything eludes physicists. Your selfie's ability to defy explanation might be the key to unlocking it.",
-    "The cosmic inflation theory explains the universe's rapid expansion. Your selfie's ability to expand my confusion is equally rapid.",
-    "The standard model of particle physics describes fundamental particles. Your selfie might be the first evidence of a new fundamental particle: the styleon.",
-    "The holographic principle suggests our universe might be a projection. Your selfie seems to be projecting from a more stylish dimension.",
-    "The quantum tunneling effect allows particles to pass through barriers. Your selfie's ability to pass through my understanding of photography is equally quantum.",
-    "The Casimir effect demonstrates quantum vacuum fluctuations. Your selfie's effect on my brain is similarly fluctuating.",
-    "The wave-particle duality shows light can behave as both wave and particle. Your selfie seems to exist in multiple states of coolness simultaneously.",
-    "The quantum entanglement theory suggests particles can be connected across space. Your selfie seems to be entangled with my sense of humor.",
-    "The cosmic censorship hypothesis protects us from naked singularities. Your selfie might be the first exception to this rule.",
-    "The holographic universe theory suggests our 3D world is a projection. Your selfie seems to be projecting from a 4D realm of style.",
-    "The quantum foam theory describes space-time at the smallest scales. Your selfie's ability to foam my brain is equally quantum.",
-    "The anthropic principle suggests the universe is fine-tuned for life. Your selfie is fine-tuned for causing quantum confusion.",
-    "The many-worlds interpretation suggests parallel universes. Your selfie might be from the universe where everyone is this stylish.",
-    "The quantum decoherence theory explains why quantum effects aren't visible in daily life. Your selfie's ability to decohere my understanding is remarkable.",
-    "The cosmic strings theory suggests defects in space-time. Your selfie might be the first evidence of a cosmic string of style.",
-    "The quantum chromodynamics theory describes strong interactions. Your selfie's interaction with my sense of style is equally strong.",
-    "The cosmic microwave background is the oldest light in the universe. Your selfie might be the newest form of quantum art.",
-    "The dark matter problem puzzles physicists. Your selfie's ability to puzzle me might be related to dark matter's influence.",
-    "The quantum gravity theory attempts to unify quantum mechanics and gravity. Your selfie might be the first evidence of quantum style gravity."
-  ];
-
-  const handleHawkingComment = () => {
-    if (!statement && !roast) {
-      setStatement("Please upload a selfie first!");
-      return;
-    }
-    const randomComment = hawkingComments[Math.floor(Math.random() * hawkingComments.length)];
-    setRoast(randomComment);
-    // Don't clear statement - keep the original result visible
-    setSecondStatement("");
-    speakRoast(randomComment);
-  };
-
-  // Function to get bottom center of image for animations
-  const getImageBottomCenter = () => {
-    if (imgRef.current) {
-      const rect = imgRef.current.getBoundingClientRect();
-      return {
-        x: rect.left + rect.width / 2,
-        y: rect.bottom - 20
-      };
-    }
-    // Fallback to center of viewport
-    return {
-      x: window.innerWidth / 2,
-      y: window.innerHeight - 100
-    };
-  };
-
-  // Function to get watermark position (top right of image)
-  const getWatermarkPosition = () => {
-    if (watermarkRef.current) {
-      const rect = watermarkRef.current.getBoundingClientRect();
-      return {
-        x: rect.left + rect.width / 2,
-        y: rect.top + rect.height / 2
-      };
-    }
-    if (imgRef.current) {
-      const rect = imgRef.current.getBoundingClientRect();
-      return {
-        x: rect.right - 50,
-        y: rect.top + 30
-      };
-    }
-    return {
-      x: window.innerWidth - 100,
-      y: 80
-    };
-  };
-
-  // Function to enable audio (call this on first user interaction)
-  const enableAudio = () => {
-    setAudioEnabled(true);
-    console.log('Audio enabled');
   };
 
   // Function to show floating hearts animation
@@ -539,9 +421,69 @@ export default function SelfieMood() {
     }
   };
 
+  // Function to get face center coordinates
+  const getFaceCenter = () => {
+    if (imgRef.current) {
+      const rect = imgRef.current.getBoundingClientRect();
+      return {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2
+      };
+    }
+    // Fallback to center of viewport
+    return {
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2
+    };
+  };
+
+  // Function to get image bottom center coordinates
+  const getImageBottomCenter = () => {
+    if (imgRef.current) {
+      const rect = imgRef.current.getBoundingClientRect();
+      return {
+        x: rect.left + rect.width / 2,
+        y: rect.bottom - 20
+      };
+    }
+    // Fallback to bottom center of viewport
+    return {
+      x: window.innerWidth / 2,
+      y: window.innerHeight - 100
+    };
+  };
+
+  // Function to get watermark position (top right of image)
+  const getWatermarkPosition = () => {
+    if (watermarkRef.current) {
+      const rect = watermarkRef.current.getBoundingClientRect();
+      return {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2
+      };
+    }
+    if (imgRef.current) {
+      const rect = imgRef.current.getBoundingClientRect();
+      return {
+        x: rect.right - 50,
+        y: rect.top + 30
+      };
+    }
+    return {
+      x: window.innerWidth - 100,
+      y: 80
+    };
+  };
+
+  // Function to enable audio (call this on first user interaction)
+  const enableAudio = () => {
+    setAudioEnabled(true);
+    console.log('Audio enabled');
+  };
+
   // Function to show floating daggers animation
-  const showFloatingDaggers = (shouldPlayAudio: boolean = false) => {
-    // Get bottom center position for weapons to rise up from
+  const showFloatingDaggers = (x: number, y: number, shouldPlayAudio: boolean = false) => {
+    // Get image bottom center for weapons to rise up from
     const imageBottomCenter = getImageBottomCenter();
     
     // Play multiple dagger sounds in rapid succession (only if audio is enabled)
@@ -570,14 +512,14 @@ export default function SelfieMood() {
       // Mix of different weapon emojis
       dagger.innerHTML = weapons[i % weapons.length];
       
-      // Position weapons at the bottom to rise up
+      // Position weapons at the bottom center to rise up
       dagger.style.left = `${imageBottomCenter.x + Math.random() * 120 - 60}px`;
-      dagger.style.top = `${imageBottomCenter.y - 30 + Math.random() * 20 - 10}px`;
+      dagger.style.top = `${imageBottomCenter.y}px`;
       dagger.style.position = 'absolute';
       dagger.style.width = '20px';
       dagger.style.height = '20px';
       dagger.style.fontSize = '20px';
-      dagger.style.animation = `floatUp 3s ease-out forwards`;
+      dagger.style.animation = `floatUp 1.2s ease-out forwards`;
       dagger.style.animationDelay = i === 0 ? '0s' : `${Math.random() * 0.6}s`;
       dagger.style.pointerEvents = 'none';
       dagger.style.opacity = '0.9';
@@ -589,14 +531,14 @@ export default function SelfieMood() {
         if (dagger.parentNode) {
           dagger.parentNode.removeChild(dagger);
         }
-      }, 3000 + (parseFloat(dagger.style.animationDelay) * 1000 || 0));
+      }, 1200 + (parseFloat(dagger.style.animationDelay) * 1000 || 0));
     }
   };
 
   return (
     <div className="min-h-screen w-full flex flex-col bg-gradient-to-br from-pink-100 via-blue-100 to-teal-100">
-      {/* Header - Fixed height */}
-      <div className="h-[90px] shrink-0 p-2 text-center">
+      {/* Header */}
+      <div className="shrink-0 p-4 text-center">
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-transparent bg-clip-text drop-shadow-lg">
           VibeRaters
         </h1>
@@ -608,8 +550,8 @@ export default function SelfieMood() {
       </div>
 
       <div className="flex-1 flex flex-col items-center justify-start p-2 w-full min-h-0">
-        <div className="w-full max-w-6xl">
-          <div className="flex flex-col space-y-2 w-full">
+        <div className="w-full max-w-md mx-auto px-4">
+          <div className="flex flex-col space-y-4 w-full">
             <div className="flex-none">
               <div className="relative group">
                 <input
@@ -621,7 +563,7 @@ export default function SelfieMood() {
                 />
                 <label
                   htmlFor="file-upload"
-                  className="block w-full px-4 py-2 text-center bg-blue-500 text-white font-semibold rounded-xl cursor-pointer hover:bg-blue-600 transition-all duration-300 shadow-md hover:shadow-xl border border-white/60 backdrop-blur-md"
+                  className="block w-full px-3 py-2 sm:px-4 sm:py-3 text-center bg-blue-500 text-white font-semibold text-sm sm:text-base rounded-xl cursor-pointer hover:bg-blue-600 transition-all duration-300 shadow-md hover:shadow-xl border border-white/60 backdrop-blur-md"
                 >
                   Upload someone's selfie
                 </label>
@@ -629,9 +571,9 @@ export default function SelfieMood() {
             </div>
 
             {imageUrl && (
-              <div ref={shareRef} className="relative grid grid-cols-1 lg:grid-cols-5 w-full mt-4 gap-4 bg-transparent">
-                {/* Left Panel */}
-                <div className="lg:col-span-3 relative rounded-lg overflow-hidden shadow-xl border-none bg-white/60 backdrop-blur-lg flex flex-col justify-start" style={{ minHeight: '350px' }}>
+              <div ref={shareRef} className="relative grid grid-cols-1 w-full gap-4 bg-transparent">
+                {/* Image Container */}
+                <div className="relative rounded-lg overflow-hidden shadow-xl border-none bg-white/60 backdrop-blur-lg flex flex-col justify-start" style={{ minHeight: '350px' }}>
                   <div className="relative w-full flex-grow flex items-center justify-center p-2">
                     <img
                       ref={imgRef}
@@ -655,35 +597,33 @@ export default function SelfieMood() {
                     )}
                   </div>
 
-                  {roast && (
-                    <p className="text-gray-800 text-lg sm:text-xl font-medium p-4 text-center bg-white/50 w-full pb-16">
+                  {roast ? (
+                    <p className="text-gray-800 text-base sm:text-lg font-medium p-4 text-center bg-white/50 w-full">
                       {roast}
                     </p>
+                  ) : (
+                    <>
+                      {statement && (
+                        <p className="text-blue-900 text-base sm:text-lg font-medium p-4 text-center bg-white/50 w-full">
+                          {statement}
+                        </p>
+                      )}
+                      {secondStatement && (
+                        <p className="text-blue-900 text-base sm:text-lg font-medium p-4 text-center bg-white/50 w-full">
+                          {secondStatement}
+                        </p>
+                      )}
+                    </>
                   )}
 
-                  <div className="absolute top-4 right-4 pointer-events-none text-right">
-                    <div ref={watermarkRef} className="p-2">
-                      <p className="text-2xl sm:text-3xl font-bold text-white select-none leading-tight [text-shadow:1px_1px_3px_rgba(0,0,0,0.7)]">VibeRaters</p>
-                      <p className="text-sm sm:text-base font-medium text-white select-none leading-tight [text-shadow:1px_1px_3px_rgba(0,0,0,0.7)]">viberaters.vercel.app</p>
+                  <div className="absolute top-4 right-4 pointer-events-none">
+                    <div ref={watermarkRef} className="text-2xl sm:text-3xl font-bold text-white select-none" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
+                      VibeRaters
+                    </div>
+                    <div className="text-sm sm:text-base font-medium text-white select-none" style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.8)' }}>
+                      viberaters.vercel.app
                     </div>
                   </div>
-                </div>
-
-                {/* Right Panel */}
-                <div className="lg:col-span-2 bg-white/70 backdrop-blur-lg rounded-lg p-4 sm:p-6 lg:p-8 border-none shadow-xl flex flex-col items-center justify-center gap-4">
-                  {statement && <p className="text-blue-900 text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed font-medium drop-shadow-sm whitespace-pre-line w-full text-center">{statement}</p>}
-                  <button
-                    onClick={handleHawkingComment}
-                    className="px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-extrabold shadow-lg bg-white text-gray-800 text-base sm:text-lg hover:bg-gray-100 transition-all border border-gray-200 flex items-center gap-2"
-                  >
-                    <svg className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                      <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.793L4.5 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.5l3.883-3.707zM12.293 7.293a1 1 0 011.414 0L15 8.586l1.293-1.293a1 1 0 111.414 1.414L16.414 10l1.293 1.293a1 1 0 01-1.414 1.414L15 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L13.586 10l-1.293-1.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
-                    AI thinks this...
-                  </button>
-                  {secondStatement && (
-                    <p className="text-blue-900 text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed font-medium drop-shadow-sm whitespace-pre-line w-full text-center">{secondStatement}</p>
-                  )}
                 </div>
               </div>
             )}
@@ -705,7 +645,7 @@ export default function SelfieMood() {
         )}
       </div>
 
-      {imageUrl && statement && imgLoaded && (
+      {imageUrl && imgLoaded && (
         <div className="w-full flex flex-col items-center mt-2 pb-4 overflow-y-auto flex-shrink-0">
           {/* Roast Level Buttons */}
           <div className="flex flex-col gap-2 sm:gap-4 my-1 sm:my-2 justify-center items-center w-full max-w-full px-2">
@@ -720,7 +660,8 @@ export default function SelfieMood() {
                     const shouldPlayAudio = !audioEnabled; // Check if this is the first interaction
                     enableAudio(); // Enable audio on first interaction
                     handleLevelRoast('L');
-                    showFloatingHearts(shouldPlayAudio);
+                    const faceCenter = getFaceCenter();
+                    showFloatingHearts(shouldPlayAudio); // Pass audio state directly
                   }}
                   className={`px-2 sm:px-4 py-0.5 sm:py-2 rounded-lg sm:rounded-xl font-bold sm:font-extrabold shadow-md sm:shadow-lg bg-pink-500 text-white text-xs sm:text-base md:text-lg hover:bg-pink-600 transition-all ${buttonBounce === 'L' ? 'animate-bounce-smooth' : ''}`}
                 >
@@ -731,7 +672,8 @@ export default function SelfieMood() {
                     const shouldPlayAudio = !audioEnabled; // Check if this is the first interaction
                     enableAudio(); // Enable audio on first interaction
                     handleLevelRoast('H');
-                    showFloatingDaggers(shouldPlayAudio);
+                    const faceCenter = getFaceCenter();
+                    showFloatingDaggers(faceCenter.x, faceCenter.y, shouldPlayAudio); // Pass audio state directly
                   }}
                   className={`px-2 sm:px-4 py-0.5 sm:py-2 rounded-lg sm:rounded-xl font-bold sm:font-extrabold shadow-md sm:shadow-lg bg-gray-400 text-gray-900 text-xs sm:text-base md:text-lg hover:bg-gray-500 transition-all ${buttonBounce === 'H' ? 'animate-bounce' : ''}`}
                 >
