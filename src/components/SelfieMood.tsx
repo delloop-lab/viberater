@@ -661,12 +661,10 @@ export default function SelfieMood() {
                     </p>
                   )}
 
-                  <div className="absolute top-4 right-4 pointer-events-none">
-                    <div ref={watermarkRef} className="text-2xl sm:text-3xl font-bold text-gray-800 select-none bg-white/80 px-2 py-1 rounded">
-                      VibeRaters
-                    </div>
-                    <div className="text-sm sm:text-base font-medium text-gray-700 select-none bg-white/80 px-2 py-1 rounded mt-1">
-                      viberaters.vercel.app
+                  <div className="absolute top-4 right-4 pointer-events-none text-right">
+                    <div ref={watermarkRef} className="p-2">
+                      <p className="text-2xl sm:text-3xl font-bold text-white select-none leading-tight [text-shadow:1px_1px_3px_rgba(0,0,0,0.7)]">VibeRaters</p>
+                      <p className="text-sm sm:text-base font-medium text-white select-none leading-tight [text-shadow:1px_1px_3px_rgba(0,0,0,0.7)]">viberaters.vercel.app</p>
                     </div>
                   </div>
                 </div>
