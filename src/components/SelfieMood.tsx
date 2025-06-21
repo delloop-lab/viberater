@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import * as faceapi from 'face-api.js';
 import html2canvas from 'html2canvas';
-import { generateRoast as generateLevelRoast } from "../roastPhrases";
+import { generateRoast } from '../roastPhrases';
 
 interface FaceExpressions {
   happy: number;
@@ -46,7 +46,9 @@ export default function SelfieMood() {
   const [buttonBounce, setButtonBounce] = useState<string | null>(null);
 
   const imgRef = useRef<HTMLImageElement>(null);
-  const [statement, setStatement] = useState<string>("I'm Ready!");
+  const [statement, setStatement] = useState<string>("");
+  const [secondStatement, setSecondStatement] = useState<string>("");
+  const [roast, setRoast] = useState<string>("");
   const [imgLoaded, setImgLoaded] = useState(false);
   const [modelsLoaded, setModelsLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -65,6 +67,7 @@ export default function SelfieMood() {
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(false);
   const watermarkRef = useRef<HTMLDivElement>(null);
+  const uploadInProgressRef = useRef(false);
 
   useEffect(() => {
     const loadModels = async () => {
@@ -92,6 +95,8 @@ export default function SelfieMood() {
     if (e.target.files && e.target.files[0]) {
       setImgLoaded(false);
       setStatement("I'm Ready!");
+      setSecondStatement("");
+      setRoast("");
       const file = e.target.files[0];
       const reader = new FileReader();
       reader.onload = (ev) => {
@@ -143,6 +148,7 @@ export default function SelfieMood() {
       console.log('Expressions:', expressions);
       
       setStatement(`Lookie here, we have a ${Math.round(age)} year old ${gender}!`);
+      setSecondStatement("Now it's your turn, use the buttons to tell 'em how you feel!");
     } catch (err) {
       console.error('Error analyzing face:', err);
       setStatement('Error analyzing face. Please try again.');
@@ -224,20 +230,32 @@ export default function SelfieMood() {
     window.open('https://www.facebook.com/', '_blank');
   };
 
-  // Automatically upload to Cloudinary when image, statement, and imgLoaded are ready
+  // Automatically upload to Cloudinary when we have a final result
   useEffect(() => {
-    // Only upload if statement is not a loading message and all are ready
+    // Only upload if we have a final result (not loading states) and haven't already uploaded
     if (
       !imageUrl ||
       !statement ||
       !imgLoaded ||
       statement === 'Loading image...' ||
+      statement === 'Analyzing...' ||
+      statement === "I'm Ready!" ||
       statement === '' ||
-      !shareRef.current
+      !shareRef.current ||
+      uploadInProgressRef.current ||
+      cloudinaryLoading
     ) return;
+
+    // Check if this is a final result (contains age/gender info)
+    const isFinalResult = statement.includes('year old') || statement.includes('No face detected');
+    
+    if (!isFinalResult) return;
+
+    uploadInProgressRef.current = true;
     setCloudinaryError('');
     setCloudinaryUrl(null);
     setCloudinaryLoading(true);
+    
     const autoUpload = async () => {
       console.log('=== CLOUDINARY UPLOAD DEBUG ===');
       console.log('imageUrl:', imageUrl ? 'YES' : 'NO');
@@ -257,6 +275,7 @@ export default function SelfieMood() {
         console.log('? Canvas is empty');
         setCloudinaryError('Could not capture the image. Please make sure the selfie is visible and fully loaded.');
         setCloudinaryLoading(false);
+        uploadInProgressRef.current = false;
         return;
       }
       
@@ -301,11 +320,13 @@ export default function SelfieMood() {
             setCloudinaryError('Cloudinary upload failed.');
           } finally {
             setCloudinaryLoading(false);
+            uploadInProgressRef.current = false;
           }
         } else {
           console.log('? Failed to create blob');
           setCloudinaryError('Failed to create image blob.');
           setCloudinaryLoading(false);
+          uploadInProgressRef.current = false;
         }
       }, 'image/jpeg');
     };
@@ -314,11 +335,11 @@ export default function SelfieMood() {
   }, [imageUrl, statement, imgLoaded]);
 
   useEffect(() => {
-    if (imageUrl && imgLoaded && statement) {
+    if (imageUrl && imgLoaded && statement && statement === "I'm Ready!") {
       handleAnalyze();
     }
     // eslint-disable-next-line
-  }, [mode]);
+  }, [imageUrl, imgLoaded, statement]);
 
   // Function to speak the roast text
   const speakRoast = (text: string) => {
@@ -345,8 +366,10 @@ export default function SelfieMood() {
 
   // Update handleLevelRoast to only set the roast, not speak automatically
   const handleLevelRoast = (level: 'G' | 'P' | 'A' | 'X' | 'XXX' | 'L' | 'H') => {
-    const roast = generateLevelRoast(level);
-    setStatement(roast);
+    const roastText = generateRoast(level);
+    setRoast(roastText);
+    // Don't clear statement - keep the original result visible
+    setSecondStatement("");
     setLastRoastLevel(level);
     setButtonBounce(level);
     setTimeout(() => setButtonBounce(''), 400);
@@ -360,9 +383,9 @@ export default function SelfieMood() {
 
   // Add Copy Roast handler
   const handleCopyRoast = async () => {
-    if (statement) {
+    if (roast) {
       try {
-        await navigator.clipboard.writeText(statement);
+        await navigator.clipboard.writeText(roast);
         alert('Roast copied to clipboard!');
       } catch {
         alert('Failed to copy roast.');
@@ -417,18 +440,64 @@ export default function SelfieMood() {
   ];
 
   const handleHawkingComment = () => {
-    if (!statement) {
+    if (!statement && !roast) {
       setStatement("Please upload a selfie first!");
       return;
     }
     const randomComment = hawkingComments[Math.floor(Math.random() * hawkingComments.length)];
-    setStatement(randomComment);
+    setRoast(randomComment);
+    // Don't clear statement - keep the original result visible
+    setSecondStatement("");
     speakRoast(randomComment);
+  };
+
+  // Function to get bottom center of image for animations
+  const getImageBottomCenter = () => {
+    if (imgRef.current) {
+      const rect = imgRef.current.getBoundingClientRect();
+      return {
+        x: rect.left + rect.width / 2,
+        y: rect.bottom - 20
+      };
+    }
+    // Fallback to center of viewport
+    return {
+      x: window.innerWidth / 2,
+      y: window.innerHeight - 100
+    };
+  };
+
+  // Function to get watermark position (top right of image)
+  const getWatermarkPosition = () => {
+    if (watermarkRef.current) {
+      const rect = watermarkRef.current.getBoundingClientRect();
+      return {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2
+      };
+    }
+    if (imgRef.current) {
+      const rect = imgRef.current.getBoundingClientRect();
+      return {
+        x: rect.right - 50,
+        y: rect.top + 30
+      };
+    }
+    return {
+      x: window.innerWidth - 100,
+      y: 80
+    };
+  };
+
+  // Function to enable audio (call this on first user interaction)
+  const enableAudio = () => {
+    setAudioEnabled(true);
+    console.log('Audio enabled');
   };
 
   // Function to show floating hearts animation
   const showFloatingHearts = (shouldPlayAudio: boolean = false) => {
-    const watermarkPos = getWatermarkPosition();
+    const imageBottomCenter = getImageBottomCenter();
     // Play multiple pop sounds in rapid succession (only if audio is enabled)
     if (shouldPlayAudio || audioEnabled) {
       for (let i = 0; i < 15; i++) {
@@ -450,8 +519,8 @@ export default function SelfieMood() {
       const heart = document.createElement('div');
       heart.classList.add('floating-heart');
       heart.innerHTML = positiveIcons[i % positiveIcons.length];
-      heart.style.left = `${watermarkPos.x + Math.random() * 120 - 60}px`;
-      heart.style.top = `${watermarkPos.y - 30 + Math.random() * 20 - 10}px`;
+      heart.style.left = `${imageBottomCenter.x + Math.random() * 120 - 60}px`;
+      heart.style.top = `${imageBottomCenter.y - 30 + Math.random() * 20 - 10}px`;
       heart.style.position = 'absolute';
       heart.style.width = '20px';
       heart.style.height = '20px';
@@ -470,54 +539,10 @@ export default function SelfieMood() {
     }
   };
 
-  // Function to get face center coordinates
-  const getFaceCenter = () => {
-    if (imgRef.current) {
-      const rect = imgRef.current.getBoundingClientRect();
-      return {
-        x: rect.left + rect.width / 2,
-        y: rect.top + rect.height / 2
-      };
-    }
-    // Fallback to center of viewport
-    return {
-      x: window.innerWidth / 2,
-      y: window.innerHeight / 2
-    };
-  };
-
-  // Function to get watermark position (bottom right of image)
-  const getWatermarkPosition = () => {
-    if (watermarkRef.current) {
-      const rect = watermarkRef.current.getBoundingClientRect();
-      return {
-        x: rect.left + rect.width / 2,
-        y: rect.top + rect.height / 2
-      };
-    }
-    if (imgRef.current) {
-      const rect = imgRef.current.getBoundingClientRect();
-      return {
-        x: rect.right - 50,
-        y: rect.bottom - 30
-      };
-    }
-    return {
-      x: window.innerWidth - 100,
-      y: window.innerHeight - 80
-    };
-  };
-
-  // Function to enable audio (call this on first user interaction)
-  const enableAudio = () => {
-    setAudioEnabled(true);
-    console.log('Audio enabled');
-  };
-
   // Function to show floating daggers animation
-  const showFloatingDaggers = (x: number, y: number, shouldPlayAudio: boolean = false) => {
-    // Get watermark position for weapons to rain down on
-    const watermarkPos = getWatermarkPosition();
+  const showFloatingDaggers = (shouldPlayAudio: boolean = false) => {
+    // Get bottom center position for weapons to rise up from
+    const imageBottomCenter = getImageBottomCenter();
     
     // Play multiple dagger sounds in rapid succession (only if audio is enabled)
     if (shouldPlayAudio || audioEnabled) {
@@ -545,14 +570,14 @@ export default function SelfieMood() {
       // Mix of different weapon emojis
       dagger.innerHTML = weapons[i % weapons.length];
       
-      // Position weapons above the watermark to rain down
-      dagger.style.left = `${watermarkPos.x + Math.random() * 120 - 60}px`;
-      dagger.style.top = `${watermarkPos.y - 100}px`;
+      // Position weapons at the bottom to rise up
+      dagger.style.left = `${imageBottomCenter.x + Math.random() * 120 - 60}px`;
+      dagger.style.top = `${imageBottomCenter.y - 30 + Math.random() * 20 - 10}px`;
       dagger.style.position = 'absolute';
       dagger.style.width = '20px';
       dagger.style.height = '20px';
       dagger.style.fontSize = '20px';
-      dagger.style.animation = `rainDownDagger 1.2s ease-out forwards`;
+      dagger.style.animation = `floatUp 3s ease-out forwards`;
       dagger.style.animationDelay = i === 0 ? '0s' : `${Math.random() * 0.6}s`;
       dagger.style.pointerEvents = 'none';
       dagger.style.opacity = '0.9';
@@ -564,7 +589,7 @@ export default function SelfieMood() {
         if (dagger.parentNode) {
           dagger.parentNode.removeChild(dagger);
         }
-      }, 1200 + (parseFloat(dagger.style.animationDelay) * 1000 || 0));
+      }, 3000 + (parseFloat(dagger.style.animationDelay) * 1000 || 0));
     }
   };
 
@@ -603,64 +628,64 @@ export default function SelfieMood() {
               </div>
             </div>
 
-            {imageUrl && statement && (
-              <div ref={shareRef} className="relative flex flex-col lg:flex-row w-full h-auto items-stretch justify-center mt-4 gap-0 lg:gap-4 bg-transparent">
-                <div className="w-full lg:w-3/5 flex items-center justify-center min-w-0">
-                  <div className="relative rounded-none overflow-hidden shadow-xl border-none bg-white/60 backdrop-blur-lg flex items-center justify-center w-full" style={{ height: 'min(40vh, 350px)' }}>
-                    <div className="container h-full w-full flex items-center justify-center p-2">
-                      {imageUrl && (
-                        <div className="relative w-full h-full flex items-center justify-center">
-                          <img
-                            ref={imgRef}
-                            src={imageUrl}
-                            alt="Selfie"
-                            className="max-w-full max-h-full w-auto h-auto object-contain"
-                            onLoad={() => {
-                              setImgLoaded(true);
-                              setStatement("I'm Ready!");
-                              console.log('Image loaded successfully');
-                            }}
-                          />
-                          {!imgLoaded && (
-                            <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black/50">
-                              <div className="text-white text-center">
-                                <div className="text-lg font-semibold mb-2">I'm Ready.</div>
-                              </div>
-                            </div>
-                          )}
+            {imageUrl && (
+              <div ref={shareRef} className="relative grid grid-cols-1 lg:grid-cols-5 w-full mt-4 gap-4 bg-transparent">
+                {/* Left Panel */}
+                <div className="lg:col-span-3 relative rounded-lg overflow-hidden shadow-xl border-none bg-white/60 backdrop-blur-lg flex flex-col justify-start" style={{ minHeight: '350px' }}>
+                  <div className="relative w-full flex-grow flex items-center justify-center p-2">
+                    <img
+                      ref={imgRef}
+                      src={imageUrl}
+                      alt="Selfie"
+                      className="w-full h-full object-cover rounded-lg"
+                      onLoad={() => {
+                        setImgLoaded(true);
+                        setStatement("I'm Ready!");
+                        setSecondStatement("");
+                        setRoast("");
+                        console.log('Image loaded successfully');
+                      }}
+                    />
+                    {!imgLoaded && (
+                      <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black/50">
+                        <div className="text-white text-center">
+                          <div className="text-lg font-semibold mb-2">I'm Ready.</div>
                         </div>
-                      )}
+                      </div>
+                    )}
+                  </div>
+
+                  {roast && (
+                    <p className="text-gray-800 text-lg sm:text-xl font-medium p-4 text-center bg-white/50 w-full pb-16">
+                      {roast}
+                    </p>
+                  )}
+
+                  <div className="absolute top-4 right-4 pointer-events-none">
+                    <div ref={watermarkRef} className="text-2xl sm:text-3xl font-bold text-gray-800 select-none bg-white/80 px-2 py-1 rounded">
+                      VibeRaters
                     </div>
-                    <div className="absolute bottom-4 right-4 pointer-events-none">
-                      <div ref={watermarkRef} className="text-2xl sm:text-3xl font-bold text-gray-300 select-none">
-                        VibeRaters
-                      </div>
-                      <div className="text-sm sm:text-base font-medium text-gray-300 select-none">
-                        viberaters.vercel.app
-                      </div>
+                    <div className="text-sm sm:text-base font-medium text-gray-700 select-none bg-white/80 px-2 py-1 rounded mt-1">
+                      viberaters.vercel.app
                     </div>
                   </div>
                 </div>
-                <div className="w-full lg:w-2/5 flex items-center justify-center min-w-0">
-                  <div className="bg-white/70 backdrop-blur-lg rounded-none p-4 sm:p-6 lg:p-8 border-none shadow-xl w-full h-full flex items-center">
-                    {statement === "I'm Ready!" ? (
-                      <div className="w-full flex flex-col items-center justify-center">
-                        <button
-                          onClick={handleHawkingComment}
-                          className="px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-extrabold shadow-lg bg-white text-gray-800 text-base sm:text-lg hover:bg-gray-100 transition-all border border-gray-200 flex items-center gap-2"
-                        >
-                          {isAudioPlaying && (
-                            <svg className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                              <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.793L4.5 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.5l3.883-3.707zM12.293 7.293a1 1 0 011.414 0L15 8.586l1.293-1.293a1 1 0 111.414 1.414L16.414 10l1.293 1.293a1 1 0 01-1.414 1.414L15 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L13.586 10l-1.293-1.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                            </svg>
-                          )}
-                          Stephen Hawking says...
-                        </button>
-                      </div>
-                    ) : (
-                      <p className="text-blue-900 text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed font-medium drop-shadow-sm whitespace-pre-line w-full">{statement}</p>
-                    )}
-                  </div>
+
+                {/* Right Panel */}
+                <div className="lg:col-span-2 bg-white/70 backdrop-blur-lg rounded-lg p-4 sm:p-6 lg:p-8 border-none shadow-xl flex flex-col items-center justify-center gap-4">
+                  {statement && <p className="text-blue-900 text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed font-medium drop-shadow-sm whitespace-pre-line w-full text-center">{statement}</p>}
+                  <button
+                    onClick={handleHawkingComment}
+                    className="px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-extrabold shadow-lg bg-white text-gray-800 text-base sm:text-lg hover:bg-gray-100 transition-all border border-gray-200 flex items-center gap-2"
+                  >
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                      <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.793L4.5 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.5l3.883-3.707zM12.293 7.293a1 1 0 011.414 0L15 8.586l1.293-1.293a1 1 0 111.414 1.414L16.414 10l1.293 1.293a1 1 0 01-1.414 1.414L15 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L13.586 10l-1.293-1.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                    AI thinks this...
+                  </button>
+                  {secondStatement && (
+                    <p className="text-blue-900 text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed font-medium drop-shadow-sm whitespace-pre-line w-full text-center">{secondStatement}</p>
+                  )}
                 </div>
               </div>
             )}
@@ -697,8 +722,7 @@ export default function SelfieMood() {
                     const shouldPlayAudio = !audioEnabled; // Check if this is the first interaction
                     enableAudio(); // Enable audio on first interaction
                     handleLevelRoast('L');
-                    const faceCenter = getFaceCenter();
-                    showFloatingHearts(shouldPlayAudio); // Pass audio state directly
+                    showFloatingHearts(shouldPlayAudio);
                   }}
                   className={`px-2 sm:px-4 py-0.5 sm:py-2 rounded-lg sm:rounded-xl font-bold sm:font-extrabold shadow-md sm:shadow-lg bg-pink-500 text-white text-xs sm:text-base md:text-lg hover:bg-pink-600 transition-all ${buttonBounce === 'L' ? 'animate-bounce-smooth' : ''}`}
                 >
@@ -709,8 +733,7 @@ export default function SelfieMood() {
                     const shouldPlayAudio = !audioEnabled; // Check if this is the first interaction
                     enableAudio(); // Enable audio on first interaction
                     handleLevelRoast('H');
-                    const faceCenter = getFaceCenter();
-                    showFloatingDaggers(faceCenter.x, faceCenter.y, shouldPlayAudio); // Pass audio state directly
+                    showFloatingDaggers(shouldPlayAudio);
                   }}
                   className={`px-2 sm:px-4 py-0.5 sm:py-2 rounded-lg sm:rounded-xl font-bold sm:font-extrabold shadow-md sm:shadow-lg bg-gray-400 text-gray-900 text-xs sm:text-base md:text-lg hover:bg-gray-500 transition-all ${buttonBounce === 'H' ? 'animate-bounce' : ''}`}
                 >
