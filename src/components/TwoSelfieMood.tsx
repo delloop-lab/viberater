@@ -1049,7 +1049,7 @@ export default function TwoSelfieMood() {
         <div className="mt-2 text-red-600 font-semibold text-sm sm:text-base px-2">{shareWarning}</div>
       )}
       <footer className="w-full text-center py-2 sm:py-4 text-blue-900/60 text-xs sm:text-sm font-medium select-none">
-        © 2025 Lou Schillaci
+        Copyright © 2025 Lou Schillaci
       </footer>
     </div>
   );
