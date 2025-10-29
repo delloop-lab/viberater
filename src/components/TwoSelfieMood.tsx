@@ -361,15 +361,31 @@ export default function TwoSelfieMood() {
           return;
         }
         
+        // Convert to blob for clipboard
+        const blob = await new Promise<Blob>((resolve) => {
+          canvas.toBlob((b) => resolve(b!), 'image/png');
+        });
+        
+        // Try to copy to clipboard
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+          ]);
+          alert(`Image copied to clipboard! Go to ${platform} and press Ctrl+V (or Cmd+V on Mac) to paste.\n\nImage also downloaded as backup.`);
+        } catch (clipError) {
+          console.log('Clipboard copy failed, downloading only', clipError);
+          alert(`Image downloaded! You can now upload it to ${platform}.`);
+        }
+        
+        // Also download as backup
         const dataUrl = canvas.toDataURL('image/jpeg');
         const link = document.createElement('a');
         link.href = dataUrl;
         link.download = `viberaters-${platform}.jpg`;
         link.click();
         
-        alert(`Image downloaded! You can now share it on ${platform}.`);
       } catch (error) {
-        alert('Failed to download image. Please try again.');
+        alert('Failed to prepare image. Please try again.');
       }
     }
   };
