@@ -347,62 +347,77 @@ export default function TwoSelfieMood() {
       return;
     }
     
-    if (shareRef.current) {
-      try {
-        const canvas = await html2canvas(shareRef.current, {
-          useCORS: true,
-          allowTaint: true,
-          scale: 2,
-          backgroundColor: '#ffffff'
-        });
-        
-        if (canvas.width === 0 || canvas.height === 0) {
-          alert('Could not capture the image. Please try again.');
-          return;
-        }
-        
-        // Convert to blob for clipboard
-        const blob = await new Promise<Blob>((resolve) => {
-          canvas.toBlob((b) => resolve(b!), 'image/png');
-        });
-        
-        // Try to copy to clipboard
-        try {
-          await navigator.clipboard.write([
-            new ClipboardItem({ 'image/png': blob })
-          ]);
-          alert(`Image copied to clipboard! Go to ${platform} and press Ctrl+V (or Cmd+V on Mac) to paste.\n\nImage also downloaded as backup.`);
-        } catch (clipError) {
-          console.log('Clipboard copy failed, downloading only', clipError);
-          alert(`Image downloaded! You can now upload it to ${platform}.`);
-        }
-        
-        // Also download as backup
-        const dataUrl = canvas.toDataURL('image/jpeg');
-        const link = document.createElement('a');
-        link.href = dataUrl;
-        link.download = `viberaters-${platform}.jpg`;
-        link.click();
-        
-        // Redirect to social media platform
-        const platformUrls: Record<string, string> = {
-          'X': 'https://x.com/compose/tweet',
-          'Facebook': 'https://www.facebook.com/',
-          'WhatsApp': 'https://web.whatsapp.com/',
-          'Instagram': 'https://www.instagram.com/',
-          'TikTok': 'https://www.tiktok.com/upload'
-        };
-        
-        if (platformUrls[platform]) {
-          // Open in new tab after a short delay to ensure download starts
-          setTimeout(() => {
-            window.open(platformUrls[platform], '_blank');
-          }, 500);
-        }
-        
-      } catch (error) {
-        alert('Failed to prepare image. Please try again.');
+    if (!imageUrl) {
+      alert('No photo selected. Please choose a photo first.');
+      return;
+    }
+    
+    if (!shareRef.current) {
+      alert('Image not ready. Please wait and try again.');
+      return;
+    }
+    
+    console.log('=== SHARE DEBUG ===');
+    console.log('shareRef.current:', shareRef.current);
+    console.log('shareRef HTML:', shareRef.current.innerHTML.substring(0, 200));
+    console.log('roast:', roast);
+    console.log('imageUrl:', imageUrl);
+    
+    try {
+      // Wait a moment to ensure DOM is fully rendered
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      const canvas = await html2canvas(shareRef.current, {
+        useCORS: true,
+        allowTaint: true,
+        scale: 2,
+        backgroundColor: '#ffffff',
+        logging: true
+      });
+      
+      console.log('Canvas dimensions:', canvas.width, 'x', canvas.height);
+      
+      if (canvas.width === 0 || canvas.height === 0) {
+        alert('Could not capture the image. Please try again.');
+        return;
       }
+      
+      // Convert to blob for clipboard
+      const blob = await new Promise<Blob>((resolve) => {
+        canvas.toBlob((b) => resolve(b!), 'image/png');
+      });
+      
+      // Download the image first
+      const dataUrl = canvas.toDataURL('image/jpeg');
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = `viberaters-${platform}.jpg`;
+      link.click();
+      
+      // Redirect to social media platform IMMEDIATELY (before alert to avoid popup blockers)
+      const platformUrls: Record<string, string> = {
+        'X': 'https://x.com/compose/tweet',
+        'Facebook': 'https://www.facebook.com/',
+        'WhatsApp': 'https://web.whatsapp.com/',
+        'Instagram': 'https://www.instagram.com/',
+        'TikTok': 'https://www.tiktok.com/upload'
+      };
+      
+      // Open platform BEFORE showing alert to prevent popup blockers
+      if (platformUrls[platform]) {
+        window.open(platformUrls[platform], '_blank');
+      }
+      
+      // Show instructions based on platform
+      if (platform === 'Facebook') {
+        alert(`Image downloaded to your device!\n\nOn Facebook:\n1. Click "Photo/Video"\n2. Select the downloaded image\n3. Add your caption and post!`);
+      } else {
+        alert(`Image downloaded to your device!\n\nUpload it to ${platform} to share your vibe!`);
+      }
+      
+    } catch (error) {
+      console.error('Share error:', error);
+      alert('Failed to prepare image. Please try again.');
     }
   };
 
@@ -760,14 +775,14 @@ export default function TwoSelfieMood() {
               <div className="flex gap-2 items-center">
                 <label
                   htmlFor="camera-upload"
-                  className="flex-1 px-3 py-2 sm:px-4 sm:py-3 text-center bg-[#B1CDBE] text-black font-semibold text-sm sm:text-base rounded-xl cursor-pointer hover:bg-[#9CB7A9] transition-all duration-300 shadow-md hover:shadow-xl border border-white/60 backdrop-blur-md"
+                  className="flex-1 px-3 py-2 sm:px-4 sm:py-3 text-center bg-[#B1CDBE] text-black font-semibold text-sm sm:text-base rounded-xl cursor-pointer hover:bg-[#9CB7A9] transition-all duration-300 shadow-md hover:shadow-xl border border-white/60"
                 >
                   📸 Snap a Photo
                 </label>
                 <span className="text-gray-700 font-bold text-sm sm:text-base px-1">OR</span>
                 <label
                   htmlFor="gallery-upload"
-                  className="flex-1 px-3 py-2 sm:px-4 sm:py-3 text-center bg-[#B1CDBE] text-black font-semibold text-sm sm:text-base rounded-xl cursor-pointer hover:bg-[#9CB7A9] transition-all duration-300 shadow-md hover:shadow-xl border border-white/60 backdrop-blur-md"
+                  className="flex-1 px-3 py-2 sm:px-4 sm:py-3 text-center bg-[#B1CDBE] text-black font-semibold text-sm sm:text-base rounded-xl cursor-pointer hover:bg-[#9CB7A9] transition-all duration-300 shadow-md hover:shadow-xl border border-white/60"
                 >
                   🖼️ Choose One
                 </label>
@@ -789,7 +804,7 @@ export default function TwoSelfieMood() {
             {imageUrl && (
               <div ref={shareRef} className="relative grid grid-cols-1 w-full gap-4 bg-transparent">
                 {/* Image Container */}
-                <div className="relative rounded-lg overflow-hidden shadow-xl border-none bg-white/60 backdrop-blur-lg flex flex-col justify-start" style={{ minHeight: '350px' }}>
+                <div className="relative rounded-lg overflow-hidden shadow-xl border-none bg-white/80 flex flex-col justify-start" style={{ minHeight: '350px' }}>
                   <div className="relative w-full flex-grow flex items-center justify-center p-2">
                     <img
                       ref={imgRef}

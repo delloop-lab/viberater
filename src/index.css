@@ -46,6 +46,24 @@ body {
   * {
     -webkit-overflow-scrolling: touch;
   }
+  
+  /* Prevent flashing/flickering on mobile */
+  * {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    perspective: 1000;
+  }
+  
+  /* Disable backdrop-blur on mobile for performance */
+  .backdrop-blur-lg,
+  .backdrop-blur-md,
+  .backdrop-blur-sm {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
 }
 
 /* Prevent layout shift on mobile */
