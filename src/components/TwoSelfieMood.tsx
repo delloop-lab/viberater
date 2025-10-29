@@ -737,21 +737,45 @@ export default function TwoSelfieMood() {
       <div className="flex-1 flex flex-col items-center justify-start p-2 w-full min-h-0">
         <div className="w-full max-w-md mx-auto">
           <div className="flex flex-col space-y-4 w-full">
-            <div className="flex-none px-4">
+            <div className="flex-none px-4 flex flex-col gap-2">
+              {/* Camera Input */}
               <input
                 type="file"
                 accept="image/*"
                 capture="user"
                 onChange={handleImageUpload}
                 className="hidden"
-                id="file-upload"
+                id="camera-upload"
               />
-              <label
-                htmlFor="file-upload"
-                className="block w-full px-3 py-2 sm:px-4 sm:py-3 text-center bg-[#B1CDBE] text-black font-semibold text-sm sm:text-base rounded-xl cursor-pointer hover:bg-[#9CB7A9] transition-all duration-300 shadow-md hover:shadow-xl border border-white/60 backdrop-blur-md"
-              >
-                Take someone's photo or choose one, vibe it, share it!
-              </label>
+              {/* Gallery Input */}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+                id="gallery-upload"
+              />
+              
+              {/* Two buttons side by side */}
+              <div className="flex gap-2 items-center">
+                <label
+                  htmlFor="camera-upload"
+                  className="flex-1 px-3 py-2 sm:px-4 sm:py-3 text-center bg-[#B1CDBE] text-black font-semibold text-sm sm:text-base rounded-xl cursor-pointer hover:bg-[#9CB7A9] transition-all duration-300 shadow-md hover:shadow-xl border border-white/60 backdrop-blur-md"
+                >
+                  📸 Snap a Photo
+                </label>
+                <span className="text-gray-700 font-bold text-sm sm:text-base px-1">OR</span>
+                <label
+                  htmlFor="gallery-upload"
+                  className="flex-1 px-3 py-2 sm:px-4 sm:py-3 text-center bg-[#B1CDBE] text-black font-semibold text-sm sm:text-base rounded-xl cursor-pointer hover:bg-[#9CB7A9] transition-all duration-300 shadow-md hover:shadow-xl border border-white/60 backdrop-blur-md"
+                >
+                  🖼️ Choose One
+                </label>
+              </div>
+              
+              <p className="text-center text-gray-700 text-xs sm:text-sm font-medium">
+                Vibe it, share it!
+              </p>
             </div>
             
             <div className="flex-none px-4">
