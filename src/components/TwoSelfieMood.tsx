@@ -744,7 +744,7 @@ export default function TwoSelfieMood() {
                 <img 
                   src="/how-it-works.png" 
                   alt="How it works: Snap/choose a face, Vibe or Roast it, Share it around" 
-                  className="max-w-full h-auto rounded-lg"
+                  className="max-w-full h-auto rounded-lg shadow-lg"
                 />
               </div>
             </div>
