@@ -718,10 +718,10 @@ export default function TwoSelfieMood() {
         <img src="/vibe.png" alt="VibeRaters Logo" className="mx-auto w-40 sm:w-48" />
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-start w-full min-h-0">
+      <div className="flex-1 flex flex-col items-center justify-start p-2 w-full min-h-0">
         <div className="w-full max-w-md mx-auto">
-          <div className="flex flex-col w-full">
-            <div className="flex-none">
+          <div className="flex flex-col space-y-4 w-full">
+            <div className="flex-none px-4">
               <input
                 type="file"
                 accept="image/*"
@@ -730,15 +730,20 @@ export default function TwoSelfieMood() {
                 className="hidden"
                 id="file-upload"
               />
-              
-              {/* Clickable How It Works Image */}
-              <label htmlFor="file-upload" className="cursor-pointer block">
-                <img 
-                  src="/how-it-works.png" 
-                  alt="Take someone's photo or choose one, vibe it, share it!" 
-                  className="w-full h-auto hover:opacity-95 transition-all duration-300"
-                />
+              <label
+                htmlFor="file-upload"
+                className="block w-full px-3 py-2 sm:px-4 sm:py-3 text-center bg-[#B1CDBE] text-black font-semibold text-sm sm:text-base rounded-xl cursor-pointer hover:bg-[#9CB7A9] transition-all duration-300 shadow-md hover:shadow-xl border border-white/60 backdrop-blur-md"
+              >
+                Take someone's photo or choose one, vibe it, share it!
               </label>
+            </div>
+            
+            <div className="flex-none px-4">
+              <img 
+                src="/it-works.png" 
+                alt="How it works" 
+                className="w-full rounded-xl shadow-md"
+              />
             </div>
 
             {imageUrl && (
