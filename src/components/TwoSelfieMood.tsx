@@ -718,9 +718,9 @@ export default function TwoSelfieMood() {
         <img src="/vibe.png" alt="VibeRaters Logo" className="mx-auto w-40 sm:w-48" />
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-start p-2 w-full min-h-0">
-        <div className="w-full max-w-md mx-auto px-4">
-          <div className="flex flex-col space-y-4 w-full">
+      <div className="flex-1 flex flex-col items-center justify-start w-full min-h-0">
+        <div className="w-full max-w-md mx-auto">
+          <div className="flex flex-col w-full">
             <div className="flex-none">
               <input
                 type="file"
@@ -736,7 +736,7 @@ export default function TwoSelfieMood() {
                 <img 
                   src="/how-it-works.png" 
                   alt="Take someone's photo or choose one, vibe it, share it!" 
-                  className="w-full h-auto rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                  className="w-full h-auto hover:opacity-95 transition-all duration-300"
                 />
               </label>
             </div>
