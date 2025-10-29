@@ -722,31 +722,23 @@ export default function TwoSelfieMood() {
         <div className="w-full max-w-md mx-auto px-4">
           <div className="flex flex-col space-y-4 w-full">
             <div className="flex-none">
-              <div className="relative group">
-                <input
-                  type="file"
-                  accept="image/*"
-                  capture="user"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                  id="file-upload"
-                />
-                <label
-                  htmlFor="file-upload"
-                  className="block w-full px-3 py-2 sm:px-4 sm:py-3 text-center bg-[#B1CDBE] text-black font-semibold text-sm sm:text-base rounded-xl cursor-pointer hover:bg-[#9CB7A9] transition-all duration-300 shadow-md hover:shadow-xl border border-white/60 backdrop-blur-md"
-                >
-                  Take someone's photo or choose one, vibe it, share it!
-                </label>
-              </div>
+              <input
+                type="file"
+                accept="image/*"
+                capture="user"
+                onChange={handleImageUpload}
+                className="hidden"
+                id="file-upload"
+              />
               
-              {/* How It Works Image */}
-              <div className="flex justify-center items-center mt-2 px-4">
+              {/* Clickable How It Works Image */}
+              <label htmlFor="file-upload" className="cursor-pointer block">
                 <img 
                   src="/how-it-works.png" 
-                  alt="How it works: Snap/choose a face, Vibe or Roast it, Share it around" 
-                  className="w-full max-w-md h-auto rounded-lg shadow-lg"
+                  alt="Take someone's photo or choose one, vibe it, share it!" 
+                  className="w-full h-auto rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
                 />
-              </div>
+              </label>
             </div>
 
             {imageUrl && (
