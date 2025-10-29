@@ -738,6 +738,15 @@ export default function TwoSelfieMood() {
                   Take someone's photo or choose one, vibe it, share it!
                 </label>
               </div>
+              
+              {/* How It Works Image */}
+              <div className="flex justify-center mt-4">
+                <img 
+                  src="/how-it-works.png" 
+                  alt="How it works: Snap/choose a face, Vibe or Roast it, Share it around" 
+                  className="max-w-full h-auto rounded-lg"
+                />
+              </div>
             </div>
 
             {imageUrl && (
