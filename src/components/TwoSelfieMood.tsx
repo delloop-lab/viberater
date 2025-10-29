@@ -735,7 +735,7 @@ export default function TwoSelfieMood() {
                   htmlFor="file-upload"
                   className="block w-full px-3 py-2 sm:px-4 sm:py-3 text-center bg-[#B1CDBE] text-black font-semibold text-sm sm:text-base rounded-xl cursor-pointer hover:bg-[#9CB7A9] transition-all duration-300 shadow-md hover:shadow-xl border border-white/60 backdrop-blur-md"
                 >
-                  Take a photo or choose one, vibe it, share it.
+                  Take someone's photo or choose one, vibe it, share it!
                 </label>
               </div>
             </div>
