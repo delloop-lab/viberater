@@ -384,6 +384,22 @@ export default function TwoSelfieMood() {
         link.download = `viberaters-${platform}.jpg`;
         link.click();
         
+        // Redirect to social media platform
+        const platformUrls: Record<string, string> = {
+          'X': 'https://x.com/compose/tweet',
+          'Facebook': 'https://www.facebook.com/',
+          'WhatsApp': 'https://web.whatsapp.com/',
+          'Instagram': 'https://www.instagram.com/',
+          'TikTok': 'https://www.tiktok.com/upload'
+        };
+        
+        if (platformUrls[platform]) {
+          // Open in new tab after a short delay to ensure download starts
+          setTimeout(() => {
+            window.open(platformUrls[platform], '_blank');
+          }, 500);
+        }
+        
       } catch (error) {
         alert('Failed to prepare image. Please try again.');
       }
